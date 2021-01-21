@@ -14,25 +14,25 @@ androidExtensions {
 }
 
 android {
-    signingConfigs {
-        register("release") {
-
-            val keystorePropertiesFile = file("../upload-keystore.properties")
-
-            if (!keystorePropertiesFile.exists()) {
-                logger.warn("Release builds may not work: signing config not found.")
-                return@register
-            }
-
-            val keystoreProperties = Properties()
-            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
-            storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
-        }
-    }
+//    signingConfigs {
+//        register("release") {
+//
+//            val keystorePropertiesFile = file("../upload-keystore.properties")
+//
+//            if (!keystorePropertiesFile.exists()) {
+//                logger.warn("Release builds may not work: signing config not found.")
+//                return@register
+//            }
+//
+//            val keystoreProperties = Properties()
+//            keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+//
+//            keyAlias = keystoreProperties["keyAlias"] as String
+//            keyPassword = keystoreProperties["keyPassword"] as String
+//            storeFile = file(keystoreProperties["storeFile"] as String)
+//            storePassword = keystoreProperties["storePassword"] as String
+//        }
+//    }
     compileSdkVersion(30)
     defaultConfig {
         applicationId = "com.bernaferrari.sdkmonitor"
@@ -54,7 +54,7 @@ android {
                             "proguard-rules.pro"
                     )
             )
-            signingConfig = signingConfigs.getByName("release")
+//            signingConfig = signingConfigs.getByName("release")
         }
 //        named("debug") {
 //            applicationIdSuffix = ".debug"

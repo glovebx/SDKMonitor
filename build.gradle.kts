@@ -6,7 +6,7 @@ buildscript {
         maven("https://jitpack.io")
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.2.0-alpha07")
+        classpath("com.android.tools.build:gradle:4.2.0-beta03")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72")
     }
 }
