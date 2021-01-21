@@ -1,4 +1,5 @@
 import com.bernaferrari.buildsrc.Libs
+import com.bernaferrari.buildsrc.Android
 import java.io.FileInputStream
 import java.util.*
 
@@ -33,13 +34,13 @@ android {
 //            storePassword = keystoreProperties["storePassword"] as String
 //        }
 //    }
-    compileSdkVersion(30)
+    compileSdkVersion(Android.compileSdk)
     defaultConfig {
         applicationId = "com.bernaferrari.sdkmonitor"
-        minSdkVersion(21)
-        targetSdkVersion(30)
-        versionCode = 12
-        versionName = "0.98"
+        minSdkVersion(Android.minSdk)
+        targetSdkVersion(Android.targetSdk)
+        versionCode = Android.versionCode
+        versionName = Android.versionName
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
