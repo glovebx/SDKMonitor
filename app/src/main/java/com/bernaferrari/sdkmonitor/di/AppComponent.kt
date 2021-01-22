@@ -88,11 +88,11 @@ object AppComponent {
 
     @Provides
     fun provideDictRepository(
-            mVersionsDao: VersionsDao,
+            versionsDao: VersionsDao,
             appsDao: AppsDao,
             @Named(value = "orderBySdk") orderBySdk: Pref<Boolean>,
             @Named(value = "showSystemApps") showSystemApps: Pref<Boolean>
-    ): MainDataSource = DatabaseDataSource(mVersionsDao, appsDao, orderBySdk, showSystemApps)
+    ): MainDataSource = DatabaseDataSource(versionsDao, appsDao, orderBySdk, showSystemApps)
 
     @Provides
     fun provideNotifyCreator(@ApplicationContext context: Context): NotifyCreator {
