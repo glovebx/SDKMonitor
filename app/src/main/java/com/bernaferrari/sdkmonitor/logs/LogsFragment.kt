@@ -15,15 +15,17 @@ import com.bernaferrari.sdkmonitor.extensions.apiToVersion
 import com.bernaferrari.sdkmonitor.extensions.convertTimestampToDate
 import com.bernaferrari.sdkmonitor.views.LogsItemModel_
 import com.bernaferrari.ui.dagger.DaggerBaseRecyclerFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class LogsFragment : DaggerBaseRecyclerFragment() {
 
     private val viewModel: LogsRxViewModel by fragmentViewModel()
-    @Inject
-    lateinit var logsViewModelFactory: LogsRxViewModel.Factory
+//    @Inject
+//    lateinit var logsViewModelFactory: LogsRxViewModel.Factory
 
     private val pagingController = TestController()
 

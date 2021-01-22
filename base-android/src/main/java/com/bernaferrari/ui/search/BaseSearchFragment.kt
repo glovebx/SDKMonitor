@@ -14,7 +14,7 @@ import com.bernaferrari.base.misc.onTextChanged
 import com.bernaferrari.base.misc.showKeyboardOnView
 import com.bernaferrari.base.view.onScroll
 import com.bernaferrari.ui.R
-import com.bernaferrari.ui.base.SharedBaseFrag
+import com.bernaferrari.ui.base.SharedBaseFragment
 import com.bernaferrari.ui.extensions.hideKeyboardWhenNecessary
 import kotlinx.android.synthetic.main.frag_search.*
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +23,7 @@ import kotlinx.coroutines.cancel
 /**
  * Simple fragment with a search box, a toolbar and a recyclerview.
  */
-abstract class BaseSearchFragment : SharedBaseFrag(), CoroutineScope {
+abstract class BaseSearchFragment : SharedBaseFragment(), CoroutineScope {
 
     lateinit var viewContainer: FrameLayout
 

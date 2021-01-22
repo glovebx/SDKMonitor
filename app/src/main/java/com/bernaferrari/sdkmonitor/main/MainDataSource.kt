@@ -2,16 +2,16 @@ package com.bernaferrari.sdkmonitor.main
 
 import com.bernaferrari.sdkmonitor.data.App
 import com.bernaferrari.sdkmonitor.data.Version
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 
 
 interface MainDataSource {
 
     fun setShouldShowSystemApps(value: Boolean)
 
-    fun shouldOrderBySdk(): Observable<Boolean>
+    fun shouldOrderBySdk(): Flow<Boolean>
 
-    fun getAppsList(): Observable<List<App>>
+    fun getAppsList(): Flow<List<App>>
 
     fun getLastItem(packageName: String): Version?
 

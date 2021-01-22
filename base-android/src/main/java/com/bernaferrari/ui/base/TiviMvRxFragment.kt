@@ -2,18 +2,19 @@ package com.bernaferrari.ui.base
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.epoxy.EpoxyController
 import com.airbnb.epoxy.EpoxyModel
 import com.airbnb.epoxy.EpoxyRecyclerView
-import com.airbnb.mvrx.BaseMvRxFragment
+import com.airbnb.mvrx.MavericksView
 
 /**
  * Really basic fragment, inspired from TiVi, with a lazy RecyclerView and most MvRx methods,
  * to reduce overall boilerplate.
  */
-abstract class TiviMvRxFragment : BaseMvRxFragment() {
+abstract class TiviMvRxFragment : Fragment(), MavericksView {
 
     lateinit var recyclerView: EpoxyRecyclerView
 

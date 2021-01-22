@@ -8,6 +8,7 @@ plugins {
     id("kotlin-android")
     id("kotlin-android-extensions")
     id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 androidExtensions {
@@ -43,6 +44,12 @@ android {
         versionName = Android.versionName
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
+            }
+        }
     }
     buildTypes {
         named("release") {
@@ -93,8 +100,6 @@ dependencies {
     implementation(Libs.AndroidX.recyclerview)
     implementation(Libs.AndroidX.Fragment.fragmentKtx)
 
-    implementation("androidx.palette:palette-ktx:1.0.0")
-
     // Navigation
     implementation(Libs.AndroidX.Navigation.navigationUi)
     implementation(Libs.AndroidX.Navigation.navigationFragment)
@@ -118,6 +123,9 @@ dependencies {
     implementation(Libs.Dagger.dagger)
     kapt(Libs.Dagger.compiler)
 
+    implementation(Libs.Hilt.hilt)
+    kapt(Libs.Hilt.compiler)
+
     implementation(Libs.Dagger.androidSupport)
     kapt(Libs.Dagger.androidProcessor)
 
@@ -139,6 +147,7 @@ dependencies {
     implementation(Libs.RxJava.rxKotlin)
     implementation(Libs.RxJava.rxRelay)
     implementation(Libs.RxJava.rxkPrefs)
+    implementation(Libs.RxJava.rxkPrefsCoroutines)
 
     implementation(Libs.materialDialogs)
     implementation(Libs.stetho)
@@ -150,11 +159,13 @@ dependencies {
 //    debugImplementation(Libs.LeakCanary.support)
     releaseImplementation(Libs.LeakCanary.no_op)
 
-    // UI
-    implementation("com.reddit:indicator-fast-scroll:1.3.0")
-
     // Time
     implementation(Libs.timeAgo)
+
+    implementation("androidx.palette:palette-ktx:1.0.0")
+
+    // UI
+    implementation("com.reddit:indicator-fast-scroll:1.3.0")
 
     // Debugging
     implementation(Libs.junit)

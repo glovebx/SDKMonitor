@@ -8,7 +8,6 @@ import androidx.core.view.updatePadding
 import com.airbnb.mvrx.*
 import com.bernaferrari.base.misc.toDp
 import com.bernaferrari.base.mvrx.simpleController
-import com.bernaferrari.sdkmonitor.Injector
 import com.bernaferrari.sdkmonitor.R
 import com.bernaferrari.sdkmonitor.data.App
 import com.bernaferrari.sdkmonitor.details.DetailsDialog
@@ -19,6 +18,7 @@ import com.bernaferrari.sdkmonitor.loadingRow
 import com.bernaferrari.sdkmonitor.util.InsetDecoration
 import com.bernaferrari.sdkmonitor.views.LogsItemModel_
 import com.bernaferrari.ui.dagger.DaggerBaseSearchFragment
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import java.util.*
@@ -32,20 +32,21 @@ class AppVersion(
 
 data class AppDetails(val title: String, val subtitle: String)
 
-data class MainState(val listOfItems: Async<List<AppVersion>> = Loading()) : MvRxState
+data class MainState(val listOfItems: Async<List<AppVersion>> = Loading()) : MavericksState
 
+@AndroidEntryPoint
 class MainFragment : DaggerBaseSearchFragment() {
 
     private val viewModel: MainViewModel by fragmentViewModel()
-    @Inject
-    lateinit var mainViewModelFactory: MainViewModel.Factory
+//    @Inject
+//    lateinit var mainViewModelFactory: MainViewModel.Factory
 
     lateinit var fastScroller: View
 
     override val showKeyboardWhenLoaded = false
 
     override fun onTextChanged(searchText: String) {
-        viewModel.inputRelay.accept(searchText)
+        viewModel.inputRelay.tryEmit(searchText)
     }
 
     private val standardItemDecorator by lazy {
@@ -107,7 +108,8 @@ class MainFragment : DaggerBaseSearchFragment() {
             top = 8.toDp(resources)
         )
 
-        viewModel.inputRelay.accept(getInputText())
+//        viewModel.inputRelay.accept(getInputText())
+        viewModel.inputRelay.tryEmit(getInputText())
 
         fastScroller = viewContainer.inflateFastScroll()
 
@@ -117,21 +119,21 @@ class MainFragment : DaggerBaseSearchFragment() {
 
         setInputHint("Loading...")
 
-        disposableManager += viewModel.maxListSize.observeOn(AndroidSchedulers.mainThread())
-            .subscribe { setInputHint(resources.getQuantityString(R.plurals.searchApps, it, it)) }
-
-        // observe when order changes
-        disposableManager += Injector.get().orderBySdk().observe()
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { orderBySdk ->
-                fastScroller.isVisible = !orderBySdk
-
-                if (orderBySdk) {
-                    recyclerView.removeItemDecoration(standardItemDecorator)
-                } else {
-                    recyclerView.addItemDecoration(standardItemDecorator)
-                }
-            }
+//        disposableManager += viewModel.maxListSize.observeOn(AndroidSchedulers.mainThread())
+//            .subscribe { setInputHint(resources.getQuantityString(R.plurals.searchApps, it, it)) }
+//
+//        // observe when order changes
+//        disposableManager += Injector.get().orderBySdk().observe()
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe { orderBySdk ->
+//                fastScroller.isVisible = !orderBySdk
+//
+//                if (orderBySdk) {
+//                    recyclerView.removeItemDecoration(standardItemDecorator)
+//                } else {
+//                    recyclerView.addItemDecoration(standardItemDecorator)
+//                }
+//            }
     }
 
     override val closeIconRes: Int? = null

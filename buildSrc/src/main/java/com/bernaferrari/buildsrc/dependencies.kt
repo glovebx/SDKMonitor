@@ -134,7 +134,7 @@ object Libs {
         }
 
         object Room {
-            private const val version = "2.1.0"
+            private const val version = "2.3.0-alpha04"
             val common = "androidx.room:room-common:$version"
             val runtime = "androidx.room:room-runtime:$version"
             val roomktx = "androidx.room:room-ktx:$version"
@@ -155,7 +155,8 @@ object Libs {
         val rxKotlin = "io.reactivex.rxjava2:rxkotlin:2.3.0"
         val rxAndroid = "io.reactivex.rxjava2:rxandroid:2.1.1"
         val rxRelay = "com.jakewharton.rxrelay2:rxrelay:2.1.0"
-        val rxkPrefs = "com.afollestad:rxkprefs:1.2.5"
+        val rxkPrefs = "com.afollestad.rxkprefs:core:2.0.3"
+        val rxkPrefsCoroutines = "com.afollestad.rxkprefs:coroutines:2.0.3"
     }
 
     object Komprehensions {
@@ -165,11 +166,21 @@ object Libs {
     }
 
     object Dagger {
-        private const val version = "2.24"
+        private const val version = "2.27"
         val dagger = "com.google.dagger:dagger:$version"
         val androidSupport = "com.google.dagger:dagger-android-support:$version"
         val compiler = "com.google.dagger:dagger-compiler:$version"
         val androidProcessor = "com.google.dagger:dagger-android-processor:$version"
+    }
+
+    object Hilt {
+        private const val hilt_version = "2.28-alpha" //Hilt依赖注入
+        private const val hilt_viewmodel_version = "1.0.0-alpha02"
+
+        val hilt = "com.google.dagger:hilt-android:$hilt_version"
+        val compiler = "com.google.dagger:hilt-android-compiler:$hilt_version"
+        val hiltViewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_viewmodel_version"
+        val hiltViewModelCompiler = "androidx.hilt:hilt-compiler:$hilt_viewmodel_version"
     }
 
     object Glide {
@@ -197,7 +208,7 @@ object Libs {
     }
 
     object MvRx {
-        private const val version = "1.0.2"
+        private const val version = "2.0.0-beta3"
         val main = "com.airbnb.android:mvrx:$version"
         val testing = "com.airbnb.android:mvrx-testing:$version"
     }

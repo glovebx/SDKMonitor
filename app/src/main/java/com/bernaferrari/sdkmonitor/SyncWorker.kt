@@ -32,7 +32,7 @@ class SyncWorker(
 
         AppManager.getPackagesWithUserPrefs().forEach {
             AppManager.insertNewApp(it)
-            AppManager.insertNewVersion(it)
+            AppManager.insertNewVersion(context, it)
         }
 
         if (isDebugEnabled) {

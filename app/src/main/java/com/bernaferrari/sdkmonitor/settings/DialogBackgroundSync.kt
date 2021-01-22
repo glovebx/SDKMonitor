@@ -11,7 +11,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.bernaferrari.base.misc.onTextChanged
-import com.bernaferrari.sdkmonitor.Injector
 import com.bernaferrari.sdkmonitor.R
 import com.bernaferrari.sdkmonitor.WorkerHelper
 import kotlinx.android.synthetic.main.dialog_sync.view.*
@@ -44,18 +43,18 @@ class DialogBackgroundSync : DialogFragment() {
 
     private fun View.setUpViews() {
 
-        item_switch.isChecked = Injector.get().backgroundSync().get()
-
-        Injector.get().syncInterval().get().also { prefs ->
-
-            when (prefs.substring(0, 1).toInt()) {
-                0 -> minutes.isChecked = true
-                1 -> hours.isChecked = true
-                2 -> days.isChecked = true
-            }
-
-            input.text = prefs.substring(1, 3).toEditText()
-        }
+//        item_switch.isChecked = Injector.get().backgroundSync().get()
+//
+//        Injector.get().syncInterval().get().also { prefs ->
+//
+//            when (prefs.substring(0, 1).toInt()) {
+//                0 -> minutes.isChecked = true
+//                1 -> hours.isChecked = true
+//                2 -> days.isChecked = true
+//            }
+//
+//            input.text = prefs.substring(1, 3).toEditText()
+//        }
 
         // update all descriptions and visibilities.
         fixSingularPlural()
@@ -73,7 +72,7 @@ class DialogBackgroundSync : DialogFragment() {
             item_switch.toggle()
             updatePickerVisibility()
             // set shared value for backgroundSync
-            Injector.get().backgroundSync().set(item_switch.isChecked)
+//            Injector.get().backgroundSync().set(item_switch.isChecked)
         }
     }
 
@@ -99,7 +98,7 @@ class DialogBackgroundSync : DialogFragment() {
     //
     private fun View.updateSyncInterval() {
         // set shared value for syncInterval
-        val prefs = Injector.get().syncInterval()
+//        val prefs = Injector.get().syncInterval()
 //        val firstDigit = kindPicker.value
 //        val secondThirdDigits = "%02d".format(numberPicker.value)
 //        prefs.set("$firstDigit$secondThirdDigits")

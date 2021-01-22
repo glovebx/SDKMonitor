@@ -2,10 +2,12 @@ package com.bernaferrari.sdkmonitor.details
 
 import com.airbnb.epoxy.CarouselModel_
 import com.airbnb.epoxy.Typed2EpoxyController
-import com.bernaferrari.sdkmonitor.*
+import com.bernaferrari.sdkmonitor.SdkHistoryBindingModel_
 import com.bernaferrari.sdkmonitor.data.Version
+import com.bernaferrari.sdkmonitor.detailsText
 import com.bernaferrari.sdkmonitor.extensions.convertTimestampToDate
 import com.bernaferrari.sdkmonitor.main.AppDetails
+import com.bernaferrari.sdkmonitor.textSeparator
 
 internal class DetailsController : Typed2EpoxyController<List<AppDetails>, List<Version>>() {
 
@@ -21,7 +23,8 @@ internal class DetailsController : Typed2EpoxyController<List<AppDetails>, List<
 
         textSeparator {
             id("separator")
-            this.label(Injector.get().appContext().getString(R.string.target_history))
+
+//            this.label(Injector.get().appContext().getString(R.string.target_history))
         }
 
         val historyModels = mutableListOf<SdkHistoryBindingModel_>()

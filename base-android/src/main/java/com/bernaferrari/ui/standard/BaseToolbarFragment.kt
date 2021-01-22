@@ -8,7 +8,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.widget.Toolbar
 import com.bernaferrari.base.view.onScroll
 import com.bernaferrari.ui.R
-import com.bernaferrari.ui.base.SharedBaseFrag
+import com.bernaferrari.ui.base.SharedBaseFragment
 import kotlinx.android.synthetic.main.frag_standard.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -16,7 +16,7 @@ import kotlinx.coroutines.cancel
 /**
  * Simple fragment with a toolbar and a recyclerview.
  */
-abstract class BaseToolbarFragment : SharedBaseFrag(), CoroutineScope {
+abstract class BaseToolbarFragment : SharedBaseFragment(), CoroutineScope {
 
     open val inflateRes = R.layout.frag_standard
 

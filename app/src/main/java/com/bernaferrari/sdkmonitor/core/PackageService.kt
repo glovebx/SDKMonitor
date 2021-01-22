@@ -2,9 +2,10 @@ package com.bernaferrari.sdkmonitor.core
 
 import android.content.Context
 import androidx.work.*
-import com.bernaferrari.sdkmonitor.Injector
 import com.bernaferrari.sdkmonitor.WorkerHelper.SERVICEWORK
+import com.bernaferrari.sdkmonitor.data.source.local.AppsDao
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 class PackageService(
     val context: Context,
@@ -24,14 +25,17 @@ class PackageService(
         return Result.success()
     }
 
+    @Inject lateinit var appsDao: AppsDao
+
     private fun handleActionRemovePackage(packageName: String) {
-        Injector.get().appsDao().deleteApp(packageName)
+//        Injector.get().appsDao().deleteApp(packageName)
+        appsDao.deleteApp(packageName)
     }
 
     private fun handleActionFetchUpdate(packageName: String) = runBlocking {
         if (AppManager.doesAppHasOrigin(packageName)) {
             val packageInfo = AppManager.getPackageInfo(packageName) ?: return@runBlocking
-            AppManager.insertNewVersion(packageInfo)
+            AppManager.insertNewVersion(context, packageInfo)
         }
     }
 
@@ -39,7 +43,7 @@ class PackageService(
         if (AppManager.doesAppHasOrigin(packageName)) {
             val packageInfo = AppManager.getPackageInfo(packageName) ?: return@runBlocking
             AppManager.insertNewApp(packageInfo)
-            AppManager.insertNewVersion(packageInfo)
+            AppManager.insertNewVersion(context, packageInfo)
         }
     }
 

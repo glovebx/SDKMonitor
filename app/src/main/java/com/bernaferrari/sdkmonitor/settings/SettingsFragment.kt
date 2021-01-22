@@ -8,13 +8,14 @@ import com.bernaferrari.sdkmonitor.*
 import com.bernaferrari.sdkmonitor.core.AboutDialog
 import com.bernaferrari.sdkmonitor.core.AppManager
 import com.bernaferrari.ui.dagger.DaggerBaseRecyclerFragment
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingsFragment : DaggerBaseRecyclerFragment() {
 
     private val viewModel: SettingsViewModel by fragmentViewModel()
-    @Inject
-    lateinit var settingsViewModelFactory: SettingsViewModel.Factory
+//    @Inject
+//    lateinit var settingsViewModelFactory: SettingsViewModel.Factory
 
     override fun epoxyController(): EpoxyController = simpleController(viewModel) { state ->
 
@@ -40,7 +41,7 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
                 .switchIsVisible(true)
                 .switchIsOn(lightMode)
                 .clickListener { v ->
-                    Injector.get().isLightTheme().set(!lightMode)
+//                    Injector.get().isLightTheme().set(!lightMode)
                     activity?.recreate()
                 }
                 .addTo(this)
@@ -55,7 +56,7 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
                 .switchIsOn(showSystemApps)
                 .subtitle("Show all installed apps. This might increase loading time.")
                 .clickListener { v ->
-                    Injector.get().showSystemApps().set(!showSystemApps)
+//                    Injector.get().showSystemApps().set(!showSystemApps)
                     AppManager.forceRefresh = true
                 }
                 .addTo(this)
@@ -70,7 +71,7 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
                 .switchIsVisible(true)
                 .switchIsOn(orderBySdk)
                 .clickListener { v ->
-                    Injector.get().orderBySdk().set(!orderBySdk)
+//                    Injector.get().orderBySdk().set(!orderBySdk)
                 }
                 .addTo(this)
 

@@ -12,7 +12,7 @@ import kotlin.coroutines.CoroutineContext
  * Fragment base that contains CoroutineScope, disposableManager and optionsMenu,
  * so that you can reduce boilerplate.
  */
-abstract class SharedBaseFrag : TiviMvRxFragment(), CoroutineScope {
+abstract class SharedBaseFragment : TiviMvRxFragment(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext = Dispatchers.Main + Job()
 

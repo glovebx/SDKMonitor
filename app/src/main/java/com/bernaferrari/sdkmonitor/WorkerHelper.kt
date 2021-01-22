@@ -24,17 +24,17 @@ object WorkerHelper {
         if (cancelCurrentWork) cancelWork()
         WorkManager.getInstance().pruneWork()
 
-        if (Injector.get().backgroundSync().get()) {
-
-            val sharedPrefs = Injector.get().sharedPrefs()
-
-            val constraints = ConstraintsRequired(
-                sharedPrefs.getBoolean(WorkerHelper.CHARGING, false),
-                sharedPrefs.getBoolean(WorkerHelper.BATTERYNOTLOW, false)
-            )
-
-            loadWorkManager(Injector.get().syncInterval().get(), constraints)
-        }
+//        if (Injector.get().backgroundSync().get()) {
+//
+//            val sharedPrefs = Injector.get().sharedPrefs()
+//
+//            val constraints = ConstraintsRequired(
+//                sharedPrefs.getBoolean(WorkerHelper.CHARGING, false),
+//                sharedPrefs.getBoolean(WorkerHelper.BATTERYNOTLOW, false)
+//            )
+//
+//            loadWorkManager(Injector.get().syncInterval().get(), constraints)
+//        }
     }
 
     private fun loadWorkManager(delay: String, constraints: WorkerHelper.ConstraintsRequired) {

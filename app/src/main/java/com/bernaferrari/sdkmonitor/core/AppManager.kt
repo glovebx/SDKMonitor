@@ -10,15 +10,19 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
-import com.bernaferrari.sdkmonitor.Injector
+import com.afollestad.rxkprefs.Pref
 import com.bernaferrari.sdkmonitor.MainActivity
 import com.bernaferrari.sdkmonitor.R
 import com.bernaferrari.sdkmonitor.data.App
 import com.bernaferrari.sdkmonitor.data.Version
+import com.bernaferrari.sdkmonitor.data.source.local.AppsDao
+import com.bernaferrari.sdkmonitor.data.source.local.VersionsDao
 import com.bernaferrari.sdkmonitor.extensions.darken
-import io.karn.notify.Notify
+import io.karn.notify.NotifyCreator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Named
 
 object AppManager {
 
@@ -29,8 +33,21 @@ object AppManager {
     private lateinit var packageManager: PackageManager
     var forceRefresh = true
 
-    fun init(context: Context) {
-        packageManager = context.packageManager
+    private lateinit var notifyCreator: NotifyCreator
+    private lateinit var appsDao: AppsDao
+    private lateinit var versionsDao: VersionsDao
+    private lateinit var showSystemApps: Pref<Boolean>
+
+    fun init(context: Context
+             , notifyCreator: NotifyCreator
+             , appsDao: AppsDao
+             , versionsDao: VersionsDao
+             , showSystemApps: Pref<Boolean>) {
+        this.packageManager = context.packageManager
+        this.notifyCreator = notifyCreator
+        this.appsDao = appsDao
+        this.versionsDao = versionsDao
+        this.showSystemApps = showSystemApps
     }
 
     private fun isUserApp(ai: ApplicationInfo?): Boolean {
@@ -49,10 +66,11 @@ object AppManager {
         packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
 
     suspend fun removePackageName(packageName: String) = withContext(Dispatchers.IO) {
-        Injector.get().appsDao().deleteApp(packageName)
+//        Injector.get().appsDao().deleteApp(packageName)
+        appsDao.deleteApp(packageName)
     }
 
-    fun insertNewVersion(packageInfo: PackageInfo) {
+    fun insertNewVersion(context: Context, packageInfo: PackageInfo) {
 
         val versionCode =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -63,7 +81,8 @@ object AppManager {
 
         val currentTargetSDK = packageInfo.applicationInfo.targetSdkVersion
 
-        val lastVersion = Injector.get().versionsDao().getLastTargetSDK(packageInfo.packageName)
+//        val lastVersion = Injector.get().versionsDao().getLastTargetSDK(packageInfo.packageName)
+        val lastVersion = versionsDao.getLastTargetSDK(packageInfo.packageName)
 
         if (lastVersion != currentTargetSDK) {
 
@@ -75,16 +94,19 @@ object AppManager {
                 targetSdk = currentTargetSDK
             )
 
-            Injector.get().versionsDao().insertVersion(version)
+//            Injector.get().versionsDao().insertVersion(version)
+            versionsDao.insertVersion(version)
 
             if (lastVersion != null) {
-                val appContext = Injector.get().appContext()
-                Notify.with(appContext)
+//                val appContext = Injector.get().appContext()
+
+//                Notify.with(appContext)
+                    notifyCreator
                     .header { this.icon = R.drawable.ic_target }
                     .meta {
                         this.clickIntent = PendingIntent.getActivity(
-                            appContext, 0,
-                            Intent(appContext, MainActivity::class.java), 0
+                                context, 0,
+                            Intent(context, MainActivity::class.java), 0
                         )
                     }.content {
                         title = "TargetSDK changed for ${getAppLabel(packageInfo)}!"
@@ -101,13 +123,15 @@ object AppManager {
 
     fun insertNewApp(packageInfo: PackageInfo) {
 
-        if (Injector.get().appsDao().getAppString(packageInfo.packageName) != null) return
+//        if (Injector.get().appsDao().getAppString(packageInfo.packageName) != null) return
+        if (appsDao.getAppString(packageInfo.packageName) != null) return
 
         val icon = packageManager.getApplicationIcon(packageInfo.applicationInfo).toBitmap()
         val backgroundColor = getPaletteColor(Palette.from(icon).generate())
         val label = getAppLabel(packageInfo)
 
-        Injector.get().appsDao().insertApp(
+//        Injector.get().appsDao().insertApp(
+        appsDao.insertApp(
             App(
                 packageName = packageInfo.packageName,
                 title = label,
@@ -128,7 +152,8 @@ object AppManager {
     }
 
     fun getPackagesWithUserPrefs(): List<PackageInfo> {
-        return if (Injector.get().showSystemApps().get()) {
+//        return if (Injector.get().showSystemApps().get()) {
+        return if (showSystemApps.get()) {
             getPackages()
         } else {
             getPackagesWithOrigin()

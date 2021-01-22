@@ -18,15 +18,17 @@ import com.bernaferrari.sdkmonitor.core.AppManager
 import com.bernaferrari.sdkmonitor.data.App
 import com.bernaferrari.sdkmonitor.extensions.darken
 import com.bernaferrari.ui.extras.BaseDaggerMvRxDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.details_fragment.view.*
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class DetailsDialog : BaseDaggerMvRxDialogFragment() {
 
     private val viewModel: DetailsViewModel by fragmentViewModel()
-    @Inject
-    lateinit var detailsViewModelFactory: DetailsViewModel.Factory
+//    @Inject
+//    lateinit var detailsViewModelFactory: DetailsViewModel.Factory
 
     companion object {
         private const val TAG = "[DetailsDialog]"

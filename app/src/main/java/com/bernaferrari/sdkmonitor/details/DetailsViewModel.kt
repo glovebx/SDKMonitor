@@ -1,12 +1,11 @@
 package com.bernaferrari.sdkmonitor.details
 
-import com.airbnb.mvrx.FragmentViewModelContext
-import com.airbnb.mvrx.MvRxViewModelFactory
-import com.airbnb.mvrx.ViewModelContext
-import com.bernaferrari.base.mvrx.MvRxViewModel
+import com.airbnb.mvrx.MavericksViewModel
 import com.bernaferrari.sdkmonitor.core.AppManager
 import com.bernaferrari.sdkmonitor.data.Version
 import com.bernaferrari.sdkmonitor.data.source.local.VersionsDao
+import com.bernaferrari.sdkmonitor.di.AssistedViewModelFactory
+import com.bernaferrari.sdkmonitor.di.DaggerMavericksViewModelFactory
 import com.bernaferrari.sdkmonitor.main.AppDetails
 import com.bernaferrari.sdkmonitor.main.MainState
 import com.squareup.inject.assisted.Assisted
@@ -15,9 +14,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DetailsViewModel @AssistedInject constructor(
-    @Assisted initialState: MainState,
+    @Assisted state: MainState,
     private val mVersionsDao: VersionsDao
-) : MvRxViewModel<MainState>(initialState) {
+) : MavericksViewModel<MainState>(state) {
 
     suspend fun fetchAllVersions(packageName: String): List<Version>? =
         withContext(Dispatchers.IO) { mVersionsDao.getAllValues(packageName) }
@@ -43,18 +42,25 @@ class DetailsViewModel @AssistedInject constructor(
     }
 
     @AssistedInject.Factory
-    interface Factory {
-        fun create(initialState: MainState): DetailsViewModel
+    interface Factory : AssistedViewModelFactory<DetailsViewModel, MainState> {
+        override fun create(state: MainState): DetailsViewModel
     }
 
-    companion object : MvRxViewModelFactory<DetailsViewModel, MainState> {
-
-        override fun create(
-            viewModelContext: ViewModelContext,
-            state: MainState
-        ): DetailsViewModel? {
-            val fragment: DetailsDialog = (viewModelContext as FragmentViewModelContext).fragment()
-            return fragment.detailsViewModelFactory.create(state)
-        }
-    }
+    companion object : DaggerMavericksViewModelFactory<DetailsViewModel, MainState>(DetailsViewModel::class.java)
+    
+//    @AssistedInject.Factory
+//    interface Factory {
+//        fun create(state: MainState): DetailsViewModel
+//    }
+//
+//    companion object : MvRxViewModelFactory<DetailsViewModel, MainState> {
+//
+//        override fun create(
+//            viewModelContext: ViewModelContext,
+//            state: MainState
+//        ): DetailsViewModel? {
+//            val fragment: DetailsDialog = (viewModelContext as FragmentViewModelContext).fragment()
+//            return fragment.detailsViewModelFactory.create(state)
+//        }
+//    }
 }
