@@ -42,6 +42,7 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
                 .switchIsOn(lightMode)
                 .clickListener { v ->
 //                    Injector.get().isLightTheme().set(!lightMode)
+                    viewModel.setLightTheme(!lightMode)
                     activity?.recreate()
                 }
                 .addTo(this)

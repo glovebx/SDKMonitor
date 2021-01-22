@@ -28,4 +28,8 @@ class SettingsRepository @Inject constructor(
         }
     }
 
+    fun toggleLightTheme(isLightMode: Boolean) {
+        lightMode.set(isLightMode)
+    }
+
 }

@@ -32,6 +32,9 @@ class SettingsViewModel @AssistedInject constructor(
         sources.getSettings().execute { copy(data = it) }
     }
 
+    fun setLightTheme(isLightMode: Boolean) {
+        sources.toggleLightTheme(isLightMode)
+    }
 
     @AssistedInject.Factory
     interface Factory : AssistedViewModelFactory<SettingsViewModel, SettingsState> {
