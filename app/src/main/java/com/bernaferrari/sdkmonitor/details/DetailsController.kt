@@ -1,7 +1,6 @@
 package com.bernaferrari.sdkmonitor.details
 
-import com.airbnb.epoxy.CarouselModel_
-import com.airbnb.epoxy.Typed2EpoxyController
+import com.airbnb.epoxy.*
 import com.bernaferrari.sdkmonitor.SdkHistoryBindingModel_
 import com.bernaferrari.sdkmonitor.data.Version
 import com.bernaferrari.sdkmonitor.detailsText
@@ -9,9 +8,21 @@ import com.bernaferrari.sdkmonitor.extensions.convertTimestampToDate
 import com.bernaferrari.sdkmonitor.main.AppDetails
 import com.bernaferrari.sdkmonitor.textSeparator
 
-internal class DetailsController : Typed2EpoxyController<List<AppDetails>, List<Version>>() {
+internal class DetailsController : AsyncEpoxyController() {
 
-    override fun buildModels(apps: List<AppDetails>, versions: List<Version>) {
+    var apps: List<AppDetails> = emptyList()
+        set(value) {
+            field = value
+            requestModelBuild()
+        }
+
+    var versions: List<Version> = emptyList()
+        set(value) {
+            field = value
+            requestModelBuild()
+        }
+
+    override fun buildModels() {
 
         apps.forEach { app ->
             detailsText {

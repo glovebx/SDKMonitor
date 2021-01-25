@@ -17,6 +17,7 @@ abstract class SharedBaseFragment : TiviMvRxFragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext = Dispatchers.Main + Job()
 
     val disposableManager = CompositeDisposable()
+    val parentJob = Job()
 
     /** Define the close icon, usually back or close */
     open val closeIconRes: Int? = 0
@@ -37,6 +38,7 @@ abstract class SharedBaseFragment : TiviMvRxFragment(), CoroutineScope {
     override fun onDestroy() {
         coroutineContext.cancel()
         disposableManager.clear()
+        parentJob.cancel()
         super.onDestroy()
     }
 }

@@ -5,6 +5,8 @@ import android.text.TextUtils
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
+import com.afollestad.rxkprefs.Pref
+import com.afollestad.rxkprefs.coroutines.asFlow
 import com.airbnb.mvrx.*
 import com.bernaferrari.base.misc.toDp
 import com.bernaferrari.base.mvrx.simpleController
@@ -21,8 +23,12 @@ import com.bernaferrari.ui.dagger.DaggerBaseSearchFragment
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import java.util.*
 import javax.inject.Inject
+import javax.inject.Named
 
 class AppVersion(
     val app: App,
@@ -40,6 +46,8 @@ class MainFragment : DaggerBaseSearchFragment() {
     private val viewModel: MainViewModel by fragmentViewModel()
 //    @Inject
 //    lateinit var mainViewModelFactory: MainViewModel.Factory
+    @Inject
+    @Named(value = "orderBySdk") lateinit var orderBySdk: Pref<Boolean>
 
     lateinit var fastScroller: View
 
@@ -119,9 +127,26 @@ class MainFragment : DaggerBaseSearchFragment() {
 
         setInputHint("Loading...")
 
-//        disposableManager += viewModel.maxListSize.observeOn(AndroidSchedulers.mainThread())
+        launch {
+            val count = viewModel.maxListSize.subscriptionCount.value
+            setInputHint(resources.getQuantityString(R.plurals.searchApps, count, count))
+        }
+//        disposableManager += viewModel.maxListSize.subscriptionCount.launchIn(coroutineContext)
+//        .observeOn(AndroidSchedulers.mainThread())
 //            .subscribe { setInputHint(resources.getQuantityString(R.plurals.searchApps, it, it)) }
-//
+
+        launch {
+            orderBySdk.asFlow().collect { orderBySdk ->
+                fastScroller.isVisible = !orderBySdk
+
+                if (orderBySdk) {
+                    recyclerView.removeItemDecoration(standardItemDecorator)
+                } else {
+                    recyclerView.addItemDecoration(standardItemDecorator)
+                }
+            }
+        }
+
 //        // observe when order changes
 //        disposableManager += Injector.get().orderBySdk().observe()
 //            .observeOn(AndroidSchedulers.mainThread())

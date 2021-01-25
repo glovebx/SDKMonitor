@@ -26,11 +26,11 @@ class MainApplication : Application() {
 //    }
 
 //    lateinit var component: SingletonComponent
-    @Inject lateinit var notifyCreator: NotifyCreator
-    @Inject lateinit var appsDao: AppsDao
-    @Inject lateinit var versionsDao: VersionsDao
-    @Inject
-    @Named(value = "showSystemApps") lateinit var showSystemApps: Pref<Boolean>
+//    @Inject lateinit var notifyCreator: NotifyCreator
+//    @Inject lateinit var appsDao: AppsDao
+//    @Inject lateinit var versionsDao: VersionsDao
+//    @Inject
+//    @Named(value = "showSystemApps") lateinit var showSystemApps: Pref<Boolean>
 
     override fun onCreate() {
         super.onCreate()
@@ -59,12 +59,12 @@ class MainApplication : Application() {
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this)
         }
-
-        AppManager.init(this
-                , notifyCreator
-                , appsDao
-                , versionsDao
-                , showSystemApps)
+//
+//        AppManager.init(this
+//                , notifyCreator
+//                , appsDao
+//                , versionsDao
+//                , showSystemApps)
     }
 
     companion object {

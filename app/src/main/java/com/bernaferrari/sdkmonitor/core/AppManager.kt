@@ -59,7 +59,7 @@ object AppManager {
 
     // verifies if app came from Play Store or was installed manually
     fun doesAppHasOrigin(packageName: String): Boolean {
-        return isUserApp(AppManager.getApplicationInfo(packageName))
+        return isUserApp(getApplicationInfo(packageName))
     }
 
     fun getPackages(): List<PackageInfo> =

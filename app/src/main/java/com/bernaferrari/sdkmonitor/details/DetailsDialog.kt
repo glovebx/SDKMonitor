@@ -13,22 +13,19 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.airbnb.mvrx.fragmentViewModel
+import com.airbnb.mvrx.withState
 import com.bernaferrari.sdkmonitor.R
-import com.bernaferrari.sdkmonitor.core.AppManager
 import com.bernaferrari.sdkmonitor.data.App
 import com.bernaferrari.sdkmonitor.extensions.darken
 import com.bernaferrari.ui.extras.BaseDaggerMvRxDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.details_fragment.view.*
-import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class DetailsDialog : BaseDaggerMvRxDialogFragment() {
 
     private val viewModel: DetailsViewModel by fragmentViewModel()
-//    @Inject
-//    lateinit var detailsViewModelFactory: DetailsViewModel.Factory
+    private val detailsController = DetailsController()
 
     companion object {
         private const val TAG = "[DetailsDialog]"
@@ -63,6 +60,7 @@ class DetailsDialog : BaseDaggerMvRxDialogFragment() {
             .also { it.getCustomView().setUpViews(app) }
     }
 
+
     private fun View.setUpViews(app: App) {
 
         titlecontent.text = app.title
@@ -91,24 +89,41 @@ class DetailsDialog : BaseDaggerMvRxDialogFragment() {
 
         recycler.background = ColorDrawable(app.backgroundColor.darken)
 
-        val detailsController = DetailsController()
+//        val detailsController = DetailsController()
         recycler.setController(detailsController)
 
-        runBlocking {
-            val packageName = app.packageName
-            val data = viewModel.fetchAppDetails(packageName)
-            if (data.isEmpty()) {
-                AppManager.removePackageName(packageName)
-                this@DetailsDialog.dismiss()
-            } else {
-                val versions = viewModel.fetchAllVersions(packageName)
-                detailsController.setData(data, versions)
-            }
-        }
+        viewModel.fetchAppDetails(app.packageName)
+//        val packageName = app.packageName
+//        val data = viewModel.fetchAppDetails(packageName)
+//        if (data.isEmpty()) {
+//            viewModel.removePackageName(packageName)
+//            this@DetailsDialog.dismiss()
+//        } else {
+//            val versions = viewModel.fetchAllVersions(packageName)
+//            detailsController.setData(data, versions)
+//        }
     }
 
     override fun invalidate() {
+        withState(viewModel) { state ->
+            if (!state.listOfDetails.complete) return@withState
 
+            state.listOfVersions()?.let {
+//                    detailsController.setData(state.listOfDetails.invoke(), it)
+                detailsController.versions = it
+            }
+
+            state.listOfDetails()?.let {
+                if (it.isEmpty()) {
+                    viewModel.removePackageName(state.packageName)
+                    this@DetailsDialog.dismiss()
+                } else {
+                    detailsController.apps = it
+                    viewModel.fetchAllVersions(state.packageName)
+                }
+            }
+
+        }
     }
 
     private fun <T> blowUp(): T {

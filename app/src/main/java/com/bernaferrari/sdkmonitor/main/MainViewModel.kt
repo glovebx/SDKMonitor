@@ -10,8 +10,10 @@ import com.bernaferrari.sdkmonitor.extensions.normalizeString
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 class MainViewModel @AssistedInject constructor(
         @Assisted state: MainState,
@@ -29,12 +31,19 @@ class MainViewModel @AssistedInject constructor(
     }
 
     private fun fetchData() = withState {
-        combine(allApps(), inputRelay) {
-            list, filter -> {
-            list.takeIf { filter.isNotBlank() }
-                    ?.filter { filter.normalizeString() in it.app.title.normalizeString() }
-                    ?: list
-            }.asFlow().execute { copy(listOfItems = it) }
+//        combine(allApps(), inputRelay) {
+//            list, filter ->
+//            // get the string without special characters and filter the list.
+//            // If the filter is not blank, it will filter the list.
+//            // If it is blank, it will return the original list.
+//            list.takeIf { filter.isNotBlank() }
+//                ?.filter { filter.normalizeString() in it.app.title.normalizeString() }
+//                    ?: list
+//        }.execute(Dispatchers.IO) {
+//            copy(listOfItems = it)
+//        }
+        allApps().execute {
+            copy(listOfItems = it)
         }
 
 //
@@ -65,9 +74,9 @@ class MainViewModel @AssistedInject constructor(
     private fun Flow<List<App>>.getAppsListObservable(orderBySdk: Boolean): Flow<List<AppVersion>> =
             this.map { list ->
                 hasLoaded = true
-                if (list.isNotEmpty()) {
-                    delay(250L)
-                }
+//                if (list.isNotEmpty()) {
+////                    delay(250L)
+//                }
                 list
             }.dropWhile {
                 if (it.isEmpty() || AppManager.forceRefresh) {
@@ -76,6 +85,7 @@ class MainViewModel @AssistedInject constructor(
                 }
                 it.isEmpty()
             }.map { list ->
+                maxListSize.tryEmit(list.size)
                 list.map { app -> mainRepository.mapSdkDate(app) }
             }.map { list ->
                 if (orderBySdk) list.sortedBy { it.sdkVersion } else list

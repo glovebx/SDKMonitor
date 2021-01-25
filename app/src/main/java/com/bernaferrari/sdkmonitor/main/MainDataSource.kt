@@ -1,5 +1,6 @@
 package com.bernaferrari.sdkmonitor.main
 
+import android.content.pm.PackageInfo
 import com.bernaferrari.sdkmonitor.data.App
 import com.bernaferrari.sdkmonitor.data.Version
 import kotlinx.coroutines.flow.Flow
@@ -7,13 +8,19 @@ import kotlinx.coroutines.flow.Flow
 
 interface MainDataSource {
 
-    fun setShouldShowSystemApps(value: Boolean)
+    suspend fun getAllVersions(packageName: String): List<Version>?
 
-    fun shouldOrderBySdk(): Flow<Boolean>
+    suspend fun setShouldShowSystemApps(value: Boolean)
 
-    fun getAppsList(): Flow<List<App>>
+    suspend fun shouldOrderBySdk(): Flow<Boolean>
 
-    fun getLastItem(packageName: String): Version?
+    suspend fun getAppsList(): Flow<List<App>>
 
-    fun mapSdkDate(app: App): AppVersion
+    suspend fun getLastItem(packageName: String): Version?
+
+    suspend fun mapSdkDate(app: App): AppVersion
+
+    suspend fun removePackageName(packageName: String)
+
+    suspend fun getPackageInfo(packageName: String): PackageInfo?
 }
