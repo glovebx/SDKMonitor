@@ -12,7 +12,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 data class DetailsState(
-        val packageName: String,
+        val packageName: String = "",
         val listOfVersions: Async<List<Version>?> = Loading(),
         val listOfDetails: Async<List<AppDetails>> = Loading()
 ) : MavericksState

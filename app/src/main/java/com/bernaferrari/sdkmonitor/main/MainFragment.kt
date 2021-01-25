@@ -38,7 +38,9 @@ class AppVersion(
 
 data class AppDetails(val title: String, val subtitle: String)
 
-data class MainState(val listOfItems: Async<List<AppVersion>> = Loading()) : MavericksState
+data class MainState(
+  val listOfItems: Async<List<AppVersion>> = Loading()
+) : MavericksState
 
 @AndroidEntryPoint
 class MainFragment : DaggerBaseSearchFragment() {

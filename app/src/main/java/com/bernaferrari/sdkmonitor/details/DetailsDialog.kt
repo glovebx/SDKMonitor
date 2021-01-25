@@ -91,6 +91,8 @@ class DetailsDialog : BaseDaggerMvRxDialogFragment() {
 
 //        val detailsController = DetailsController()
         recycler.setController(detailsController)
+      //TODO: 如果不加这一句，则内容不会显示！！！
+      detailsController.requestModelBuild()
 
         viewModel.fetchAppDetails(app.packageName)
 //        val packageName = app.packageName
@@ -106,23 +108,25 @@ class DetailsDialog : BaseDaggerMvRxDialogFragment() {
 
     override fun invalidate() {
         withState(viewModel) { state ->
-            if (!state.listOfDetails.complete) return@withState
+//            if (!state.listOfDetails.complete) return@withState
 
+          if (state.listOfVersions.complete) {
             state.listOfVersions()?.let {
 //                    detailsController.setData(state.listOfDetails.invoke(), it)
-                detailsController.versions = it
+              detailsController.versions = it
             }
-
+          }
+          else {
             state.listOfDetails()?.let {
-                if (it.isEmpty()) {
-                    viewModel.removePackageName(state.packageName)
-                    this@DetailsDialog.dismiss()
-                } else {
-                    detailsController.apps = it
-                    viewModel.fetchAllVersions(state.packageName)
-                }
+              if (it.isEmpty()) {
+                viewModel.removePackageName(state.packageName)
+                this@DetailsDialog.dismiss()
+              } else {
+                detailsController.apps = it
+                viewModel.fetchAllVersions(state.packageName)
+              }
             }
-
+          }
         }
     }
 

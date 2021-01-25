@@ -26,76 +26,77 @@ import javax.inject.Singleton
 @InstallIn(ApplicationComponent::class)
 object AppComponent {
 
-    @Provides
-    fun provideSharedPreferences(@ApplicationContext application: Context): SharedPreferences {
-        return application.getSharedPreferences("workerPreferences", Context.MODE_PRIVATE)
-    }
+  @Provides
+  fun provideSharedPreferences(@ApplicationContext application: Context): SharedPreferences {
+    return application.getSharedPreferences("workerPreferences", Context.MODE_PRIVATE)
+  }
 
-    @Provides
-    fun provideRxPrefs(sharedPreferences: SharedPreferences): RxkPrefs {
-        return rxkPrefs(sharedPreferences)
-    }
+  @Provides
+  fun provideRxPrefs(sharedPreferences: SharedPreferences): RxkPrefs {
+    return rxkPrefs(sharedPreferences)
+  }
 
-    @Provides
-    @Named("lightMode")
-    fun provideIsLightTheme(rxPrefs: RxkPrefs): Pref<Boolean> {
-        return rxPrefs.boolean("lightMode", true)
-    }
+  @Provides
+  @Named("lightMode")
+  fun provideIsLightTheme(rxPrefs: RxkPrefs): Pref<Boolean> {
+    return rxPrefs.boolean("lightMode", true)
+  }
 
-    @Provides
-    @Named("showSystemApps")
-    fun provideShowSystemApps(rxPrefs: RxkPrefs): Pref<Boolean> {
-        return rxPrefs.boolean("showSystemApps", false)
-    }
+  @Provides
+  @Named("showSystemApps")
+  fun provideShowSystemApps(rxPrefs: RxkPrefs): Pref<Boolean> {
+    return rxPrefs.boolean("showSystemApps", false)
+  }
 
-    @Provides
-    @Named("backgroundSync")
-    fun provideBackgroundSync(rxPrefs: RxkPrefs): Pref<Boolean> {
-        return rxPrefs.boolean("backgroundSync", false)
-    }
+  @Provides
+  @Named("backgroundSync")
+  fun provideBackgroundSync(rxPrefs: RxkPrefs): Pref<Boolean> {
+    return rxPrefs.boolean("backgroundSync", false)
+  }
 
-    @Provides
-    @Named("syncInterval")
-    fun provideSyncInterval(rxPrefs: RxkPrefs): Pref<String> {
-        return rxPrefs.string("syncInterval", "301")
-    }
+  @Provides
+  @Named("syncInterval")
+  fun provideSyncInterval(rxPrefs: RxkPrefs): Pref<String> {
+    return rxPrefs.string("syncInterval", "301")
+  }
 
-    @Provides
-    @Named("orderBySdk")
-    fun provideOrderBySdk(rxPrefs: RxkPrefs): Pref<Boolean> {
-        return rxPrefs.boolean("orderBySdk", false)
-    }
+  @Provides
+  @Named("orderBySdk")
+  fun provideOrderBySdk(rxPrefs: RxkPrefs): Pref<Boolean> {
+    return rxPrefs.boolean("orderBySdk", false)
+  }
 
-    @Singleton
-    @Provides
-    internal fun provideDb(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(
-                context.applicationContext,
-                AppDatabase::class.java,
-                "Apps.db"
-        )
-                .fallbackToDestructiveMigration()
-                .build()
-    }
+  @Singleton
+  @Provides
+  internal fun provideDb(@ApplicationContext context: Context): AppDatabase {
+    return Room.databaseBuilder(
+      context.applicationContext,
+      AppDatabase::class.java,
+      "Apps.db"
+    )
+      .fallbackToDestructiveMigration()
+      .build()
+  }
 
-    @Singleton
-    @Provides
-    internal fun provideAppsDao(db: AppDatabase): AppsDao = db.snapsDao()
+  @Singleton
+  @Provides
+  internal fun provideAppsDao(db: AppDatabase): AppsDao = db.snapsDao()
 
-    @Singleton
-    @Provides
-    internal fun provideVersionsDao(db: AppDatabase): VersionsDao = db.versionsDao()
+  @Singleton
+  @Provides
+  internal fun provideVersionsDao(db: AppDatabase): VersionsDao = db.versionsDao()
 
-    @Provides
-    fun provideDictRepository(
-            versionsDao: VersionsDao,
-            appsDao: AppsDao,
-            @Named(value = "orderBySdk") orderBySdk: Pref<Boolean>,
-            @Named(value = "showSystemApps") showSystemApps: Pref<Boolean>
-    ): MainDataSource = DatabaseDataSource(versionsDao, appsDao, orderBySdk, showSystemApps)
+  @Provides
+  fun provideDictRepository(
+    @ApplicationContext context: Context,
+    versionsDao: VersionsDao,
+    appsDao: AppsDao,
+    @Named(value = "orderBySdk") orderBySdk: Pref<Boolean>,
+    @Named(value = "showSystemApps") showSystemApps: Pref<Boolean>
+  ): MainDataSource = DatabaseDataSource(context, versionsDao, appsDao, orderBySdk, showSystemApps)
 
-    @Provides
-    fun provideNotifyCreator(@ApplicationContext context: Context): NotifyCreator {
-        return Notify.with(context)
-    }
+  @Provides
+  fun provideNotifyCreator(@ApplicationContext context: Context): NotifyCreator {
+    return Notify.with(context)
+  }
 }

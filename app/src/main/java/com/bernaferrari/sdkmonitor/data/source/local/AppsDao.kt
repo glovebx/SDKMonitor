@@ -15,10 +15,10 @@ import kotlinx.coroutines.flow.Flow
 interface AppsDao {
 
     @Query("SELECT * FROM apps WHERE (isFromPlayStore = :hasKnownOrigin) ORDER BY title COLLATE NOCASE ASC")
-    fun getAppsListFlowableFiltered(hasKnownOrigin: Boolean): Flow<List<App>>
+    fun getAppsListFlowableFiltered(hasKnownOrigin: Boolean): List<App>
 
     @Query("SELECT * FROM apps ORDER BY title COLLATE NOCASE ASC")
-    fun getAppsListFlowable(): Flow<List<App>>
+    fun getAppsListFlowable(): List<App>
 
     @Query("SELECT * FROM apps")
     fun getAppsList(): List<App>

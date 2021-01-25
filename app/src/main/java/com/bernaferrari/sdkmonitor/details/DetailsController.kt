@@ -25,6 +25,7 @@ internal class DetailsController : AsyncEpoxyController() {
     override fun buildModels() {
 
         apps.forEach { app ->
+
             detailsText {
                 id(app.title)
                 this.title(app.title)
@@ -34,7 +35,7 @@ internal class DetailsController : AsyncEpoxyController() {
 
         textSeparator {
             id("separator")
-
+          this.label("xxxx")
 //            this.label(Injector.get().appContext().getString(R.string.target_history))
         }
 
