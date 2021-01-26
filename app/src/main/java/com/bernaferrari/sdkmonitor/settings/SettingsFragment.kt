@@ -14,8 +14,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class SettingsFragment : DaggerBaseRecyclerFragment() {
 
     private val viewModel: SettingsViewModel by fragmentViewModel()
-//    @Inject
-//    lateinit var settingsViewModelFactory: SettingsViewModel.Factory
 
     override fun epoxyController(): EpoxyController = simpleController(viewModel) { state ->
 
@@ -58,7 +56,8 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
                 .subtitle("Show all installed apps. This might increase loading time.")
                 .clickListener { v ->
 //                    Injector.get().showSystemApps().set(!showSystemApps)
-                    AppManager.forceRefresh = true
+//                    AppManager.forceRefresh = true
+                  viewModel.setShowSystemApps(!showSystemApps)
                 }
                 .addTo(this)
 
@@ -73,6 +72,7 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
                 .switchIsOn(orderBySdk)
                 .clickListener { v ->
 //                    Injector.get().orderBySdk().set(!orderBySdk)
+                  viewModel.setOrderBySdk(!orderBySdk)
                 }
                 .addTo(this)
 

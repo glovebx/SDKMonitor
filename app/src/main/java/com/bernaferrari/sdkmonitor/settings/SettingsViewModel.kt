@@ -4,44 +4,60 @@ import com.airbnb.mvrx.*
 import com.bernaferrari.sdkmonitor.data.SettingsRepository
 import com.bernaferrari.sdkmonitor.di.AssistedViewModelFactory
 import com.bernaferrari.sdkmonitor.di.DaggerMavericksViewModelFactory
+import com.bernaferrari.sdkmonitor.main.MainDataSource
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 data class SettingsData(
-    val lightMode: Boolean,
-    val showSystemApps: Boolean,
-    val backgroundSync: Boolean,
-    val orderBySdk: Boolean
+  val lightMode: Boolean,
+  val showSystemApps: Boolean,
+  val backgroundSync: Boolean,
+  val orderBySdk: Boolean
 ) : MavericksState
 
 data class SettingsState(
-    val data: Async<SettingsData> = Loading()
+  val data: Async<SettingsData> = Loading()
 ) : MavericksState
 
 class SettingsViewModel @AssistedInject constructor(
-    @Assisted state: SettingsState,
-    private val sources: SettingsRepository
+  @Assisted state: SettingsState,
+  private val settingsRepository: SettingsRepository,
+  private val mainRepository: MainDataSource
 ) : MavericksViewModel<SettingsState>(state) {
 
-    init {
-        fetchData()
-    }
+  init {
+    fetchData()
+  }
 
-    private fun fetchData() = withState {
-        sources.getSettings().execute { copy(data = it) }
-    }
+  private fun fetchData() = withState {
+    viewModelScope.async {
+      settingsRepository.getSettings()
+    }.execute {
+      copy(data = it) }
+  }
 
-    fun setLightTheme(isLightMode: Boolean) {
-        sources.toggleLightTheme(isLightMode)
-    }
+  fun setLightTheme(isLightMode: Boolean) {
+    settingsRepository.toggleLightTheme(isLightMode)
+  }
 
-    @AssistedInject.Factory
-    interface Factory : AssistedViewModelFactory<SettingsViewModel, SettingsState> {
-        override fun create(state: SettingsState): SettingsViewModel
-    }
+  fun setShowSystemApps(isShowSystemApps: Boolean) {
+    settingsRepository.toggleShowSystemApps(isShowSystemApps)
+    mainRepository.forceRefresh = true
+  }
 
-    companion object : DaggerMavericksViewModelFactory<SettingsViewModel, SettingsState>(SettingsViewModel::class.java)
+  fun setOrderBySdk(isOrderBySdk: Boolean) {
+    settingsRepository.toggleOrderBySdk(isOrderBySdk)
+  }
+
+  @AssistedInject.Factory
+  interface Factory : AssistedViewModelFactory<SettingsViewModel, SettingsState> {
+    override fun create(state: SettingsState): SettingsViewModel
+  }
+
+  companion object : DaggerMavericksViewModelFactory<SettingsViewModel, SettingsState>(SettingsViewModel::class.java)
 //
 //    @AssistedInject.Factory
 //    interface Factory {
