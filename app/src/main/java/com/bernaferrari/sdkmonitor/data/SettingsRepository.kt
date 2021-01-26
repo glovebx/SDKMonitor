@@ -10,11 +10,13 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
+import javax.inject.Singleton
 
 //                Injector.get().isLightTheme().observe(),
 //                Injector.get().showSystemApps().observe(),
 //                Injector.get().backgroundSync().observe(),
 //                Injector.get().orderBySdk().observe()
+@Singleton
 class SettingsRepository @Inject constructor(
   @Named(value = "lightMode") val lightMode: Pref<Boolean>,
   @Named(value = "showSystemApps") val showSystemApps: Pref<Boolean>,
@@ -22,7 +24,7 @@ class SettingsRepository @Inject constructor(
   @Named(value = "orderBySdk") val orderBySdk: Pref<Boolean>
 ) {
 
-  suspend fun getSettings(): SettingsData = withContext(Dispatchers.Default) {
+  fun getSettings(): Flow<SettingsData> =
 //    lightMode.asFlow().collect {
 //      Log.i("lightMode", "lightMode=$it")
 //    }
@@ -42,8 +44,8 @@ class SettingsRepository @Inject constructor(
       orderBySdk.asFlow()
     ) { dark, system, backgroundSync, orderBySdk ->
       SettingsData(dark, system, backgroundSync, orderBySdk)
-    }.first()
-  }
+    }
+
 
   fun toggleLightTheme(isLightMode: Boolean) {
     lightMode.set(isLightMode)
