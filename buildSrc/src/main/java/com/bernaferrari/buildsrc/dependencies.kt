@@ -212,6 +212,7 @@ object Libs {
         private const val version = "2.0.0-beta3"
         val main = "com.airbnb.android:mvrx:$version"
         val testing = "com.airbnb.android:mvrx-testing:$version"
+        val mvrxRxJava = "com.airbnb.android:mvrx-rxjava2:$version"
     }
 
     object Epoxy {

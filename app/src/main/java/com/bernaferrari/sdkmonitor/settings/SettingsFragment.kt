@@ -17,11 +17,13 @@ import com.bernaferrari.sdkmonitor.core.AboutDialog
 import com.bernaferrari.sdkmonitor.core.AppManager
 import com.bernaferrari.ui.dagger.DaggerBaseRecyclerFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -49,14 +51,27 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
 //            }
 //        }
 
+        // 在di里定义必须不能是Signelton！！！！
         showSystemApps.observe().subscribe {
             Log.i("showSystemApps", it.toString())
         }
+//
+//        launch {
+//            withContext(NonCancellable) {
+//                showSystemApps.asFlow().collect{
+//                    Log.i("showSystemApps", it.toString())
+//                }
+//            }
+//        }
 
-        val xx = showSystemApps.get()
-        showSystemApps.set(!xx)
-        showSystemApps.set(xx)
-        showSystemApps.set(!xx)
+//        showSystemApps.observe().subscribe {
+//            Log.i("showSystemApps", it.toString())
+//        }
+//
+//        val xx = showSystemApps.get()
+//        showSystemApps.set(!xx)
+//        showSystemApps.set(xx)
+//        showSystemApps.set(!xx)
     }
 
 
@@ -103,8 +118,8 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
                 .clickListener { v ->
 //                    Injector.get().showSystemApps().set(!showSystemApps)
 //                    AppManager.forceRefresh = true
-                    val xx = showSystemApps.get()
-                  showSystemApps.set(!xx)
+                    // TODO: 这里值不对！！！！
+                  showSystemApps.set(!isShowSystemApps)
                 }
                 .addTo(this)
 

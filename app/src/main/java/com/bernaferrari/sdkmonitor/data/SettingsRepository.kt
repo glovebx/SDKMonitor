@@ -6,6 +6,7 @@ import com.afollestad.rxkprefs.coroutines.asFlow
 import com.bernaferrari.sdkmonitor.settings.SettingsData
 import io.reactivex.rxkotlin.Observables
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -37,18 +38,18 @@ class SettingsRepository @Inject constructor(
 //    orderBySdk.asFlow().collect {
 //      Log.i("orderBySdk", "orderBySdk=$it")
 //    }
-          lightMode.asFlow().combine(showSystemApps.asFlow()) {
-            dark, system ->
-            SettingsData(dark, system, true, true)
-          }
-//    combine(
-//      lightMode.asFlow(),
-//      showSystemApps.asFlow(),
-//      backgroundSync.asFlow(),
-//      orderBySdk.asFlow()
-//    ) { dark, system, backgroundSync, orderBySdk ->
-//      SettingsData(dark, system, backgroundSync, orderBySdk)
-//    }
+//          lightMode.asFlow().combine(showSystemApps.asFlow()) {
+//            dark, system ->
+//            SettingsData(dark, system, true, true)
+//          }
+              combine(
+                      lightMode.asFlow(),
+                      showSystemApps.asFlow(),
+                      backgroundSync.asFlow(),
+                      orderBySdk.asFlow()
+              ) { dark, system, backgroundSync, orderBySdk ->
+                  SettingsData(dark, system, backgroundSync, orderBySdk)
+              }
 
 
   fun toggleLightTheme(isLightMode: Boolean) {
