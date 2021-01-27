@@ -43,10 +43,10 @@ class SettingsRepository @Inject constructor(
 //            SettingsData(dark, system, true, true)
 //          }
               combine(
-                      lightMode.asFlow(),
-                      showSystemApps.asFlow(),
-                      backgroundSync.asFlow(),
-                      orderBySdk.asFlow()
+                      lightMode.asFlow().conflate(),
+                      showSystemApps.asFlow().conflate(),
+                      backgroundSync.asFlow().conflate(),
+                      orderBySdk.asFlow().conflate()
               ) { dark, system, backgroundSync, orderBySdk ->
                   SettingsData(dark, system, backgroundSync, orderBySdk)
               }

@@ -115,12 +115,16 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
                 .switchIsVisible(true)
                 .switchIsOn(isShowSystemApps)
                 .subtitle("Show all installed apps. This might increase loading time.")
-                .clickListener { v ->
-//                    Injector.get().showSystemApps().set(!showSystemApps)
-//                    AppManager.forceRefresh = true
-                    // TODO: 这里值不对！！！！
-                  showSystemApps.set(!isShowSystemApps)
-                }
+              .clickListener { model, parentView, clickedView, position ->
+//                Log.i("switchIsOn", "switchIsOn=$model.switchIsOn()")
+                showSystemApps.set(!model.switchIsOn())
+              }
+//                .clickListener { v ->
+////                    Injector.get().showSystemApps().set(!showSystemApps)
+////                    AppManager.forceRefresh = true
+//                    // TODO: 这里值不对！！！！
+//                  showSystemApps.set(!isShowSystemApps)
+//                }
                 .addTo(this)
 
             val isOrderBySdk = state.data()?.orderBySdk ?: true
@@ -132,10 +136,13 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
                 .subtitle("Change the order of items")
                 .switchIsVisible(true)
                 .switchIsOn(isOrderBySdk)
-                .clickListener { v ->
-//                    Injector.get().orderBySdk().set(!orderBySdk)
-                  orderBySdk.set(!isOrderBySdk)
-                }
+              .clickListener { model, parentView, clickedView, position ->
+                orderBySdk.set(!model.switchIsOn())
+              }
+//                .clickListener { v ->
+////                    Injector.get().orderBySdk().set(!orderBySdk)
+//                  orderBySdk.set(!isOrderBySdk)
+//                }
                 .addTo(this)
 
             val backgroundSync = state.data()?.backgroundSync ?: false
