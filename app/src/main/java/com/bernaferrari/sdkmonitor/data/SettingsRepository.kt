@@ -37,14 +37,18 @@ class SettingsRepository @Inject constructor(
 //    orderBySdk.asFlow().collect {
 //      Log.i("orderBySdk", "orderBySdk=$it")
 //    }
-    combine(
-      lightMode.asFlow(),
-      showSystemApps.asFlow(),
-      backgroundSync.asFlow(),
-      orderBySdk.asFlow()
-    ) { dark, system, backgroundSync, orderBySdk ->
-      SettingsData(dark, system, backgroundSync, orderBySdk)
-    }
+          lightMode.asFlow().combine(showSystemApps.asFlow()) {
+            dark, system ->
+            SettingsData(dark, system, true, true)
+          }
+//    combine(
+//      lightMode.asFlow(),
+//      showSystemApps.asFlow(),
+//      backgroundSync.asFlow(),
+//      orderBySdk.asFlow()
+//    ) { dark, system, backgroundSync, orderBySdk ->
+//      SettingsData(dark, system, backgroundSync, orderBySdk)
+//    }
 
 
   fun toggleLightTheme(isLightMode: Boolean) {

@@ -1,5 +1,6 @@
 package com.bernaferrari.sdkmonitor.settings
 
+import android.util.Log
 import com.afollestad.rxkprefs.Pref
 import com.afollestad.rxkprefs.coroutines.asFlow
 import com.airbnb.mvrx.*
@@ -11,6 +12,7 @@ import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,20 +40,27 @@ class SettingsViewModel @AssistedInject constructor(
 ) : MavericksViewModel<SettingsState>(state) {
 
   init {
-    combine(
-      lightMode.asFlow(),
-      showSystemApps.asFlow(),
-      backgroundSync.asFlow(),
-      orderBySdk.asFlow()
-    ) { dark, system, backgroundSync, orderBySdk ->
-      SettingsData(dark, system, backgroundSync, orderBySdk)
-    }.execute { copy(data = it) }
+    fetchData()
   }
 
-//  private fun fetchData() = withState {
-//      se.execute {
+  private fun fetchData() = withState {
+//    combine(
+//            lightMode.asFlow(),
+//            showSystemApps.asFlow(),
+//            backgroundSync.asFlow(),
+//            orderBySdk.asFlow()
+//    ) { dark, system, backgroundSync, orderBySdk ->
+//      SettingsData(dark, system, backgroundSync, orderBySdk)
+//    }.execute { copy(data = it) }
+//    settingsRepository.getSettings().execute {
 //      copy(data = it) }
-//  }
+
+//    viewModelScope.launch {
+//      showSystemApps.asFlow().collect {
+//                Log.i("showSystemApps","showSystemApps=$it")
+//      }
+//    }
+  }
 
   fun setLightTheme(isLightMode: Boolean) {
     settingsRepository.toggleLightTheme(isLightMode)

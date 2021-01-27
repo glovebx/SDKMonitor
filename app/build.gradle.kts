@@ -148,6 +148,7 @@ dependencies {
     implementation(Libs.RxJava.rxRelay)
     implementation(Libs.RxJava.rxkPrefs)
     implementation(Libs.RxJava.rxkPrefsCoroutines)
+    implementation(Libs.RxJava.rxkPrefsRxJava)
 
     implementation(Libs.materialDialogs)
     implementation(Libs.stetho)

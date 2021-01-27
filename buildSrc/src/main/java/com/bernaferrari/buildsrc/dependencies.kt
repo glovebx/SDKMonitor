@@ -157,6 +157,7 @@ object Libs {
         val rxRelay = "com.jakewharton.rxrelay2:rxrelay:2.1.0"
         val rxkPrefs = "com.afollestad.rxkprefs:core:2.0.3"
         val rxkPrefsCoroutines = "com.afollestad.rxkprefs:coroutines:2.0.3"
+        val rxkPrefsRxJava = "com.afollestad.rxkprefs:rxjava:2.0.3"
     }
 
     object Komprehensions {
