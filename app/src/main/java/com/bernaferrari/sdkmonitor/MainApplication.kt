@@ -1,19 +1,12 @@
 package com.bernaferrari.sdkmonitor
 
 import android.app.Application
-import com.afollestad.rxkprefs.Pref
 import com.airbnb.mvrx.Mavericks
-import com.bernaferrari.sdkmonitor.core.AppManager
-import com.bernaferrari.sdkmonitor.data.source.local.AppsDao
-import com.bernaferrari.sdkmonitor.data.source.local.VersionsDao
 import com.facebook.stetho.Stetho
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.squareup.leakcanary.LeakCanary
 import dagger.hilt.android.HiltAndroidApp
-import io.karn.notify.NotifyCreator
-import javax.inject.Inject
-import javax.inject.Named
 
 @HiltAndroidApp
 class MainApplication : Application() {

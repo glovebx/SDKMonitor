@@ -175,13 +175,13 @@ object Libs {
     }
 
     object Hilt {
-        private const val hilt_version = "2.28-alpha" //Hilt依赖注入
-        private const val hilt_viewmodel_version = "1.0.0-alpha02"
+        private const val hilt_version = "2.28.3-alpha" //Hilt依赖注入
+//        private const val hilt_viewmodel_version = "1.0.0-alpha02"
 
         val hilt = "com.google.dagger:hilt-android:$hilt_version"
         val compiler = "com.google.dagger:hilt-android-compiler:$hilt_version"
-        val hiltViewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_viewmodel_version"
-        val hiltViewModelCompiler = "androidx.hilt:hilt-compiler:$hilt_viewmodel_version"
+//        val hiltViewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_viewmodel_version"
+//        val hiltViewModelCompiler = "androidx.hilt:hilt-compiler:$hilt_viewmodel_version"
     }
 
     object Glide {

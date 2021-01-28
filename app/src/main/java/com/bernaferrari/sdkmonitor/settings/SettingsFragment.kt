@@ -50,11 +50,11 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
 //                Log.i("showSystemApps", it.toString())
 //            }
 //        }
-
-        // 在di里定义必须不能是Signelton！！！！
-        showSystemApps.observe().subscribe {
-            Log.i("showSystemApps", it.toString())
-        }
+//
+//        // 在di里定义必须不能是Signelton！！！！
+//        showSystemApps.observe().subscribe {
+//            Log.i("showSystemApps", it.toString())
+//        }
 //
 //        launch {
 //            withContext(NonCancellable) {

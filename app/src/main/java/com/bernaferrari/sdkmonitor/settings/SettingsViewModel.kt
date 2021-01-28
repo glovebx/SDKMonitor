@@ -1,5 +1,6 @@
 package com.bernaferrari.sdkmonitor.settings
 
+import android.util.Log
 import com.afollestad.rxkprefs.Pref
 import com.afollestad.rxkprefs.coroutines.asFlow
 import com.afollestad.rxkprefs.rxjava.observe
@@ -55,6 +56,9 @@ class SettingsViewModel @AssistedInject constructor(
     }
   }
 
+  lateinit var job1 : Job
+  lateinit var job2 : Job
+
   private fun fetchData() =
 //    combine(
 //            lightMode.asFlow(),
@@ -72,6 +76,57 @@ class SettingsViewModel @AssistedInject constructor(
 //        }
 //      }
 //    }
+
+//
+//    val handler = CoroutineExceptionHandler {
+//      context, exception -> println("Caught $exception")
+//    }
+
+    viewModelScope.launch(SupervisorJob()) {
+//      flow {
+//        emit(SettingsData(lightMode.get(), showSystemApps.get(), backgroundSync.get(), orderBySdk.get()))
+//      }.execute {
+//        copy(data = it)
+//      }
+
+      // kotlinx.coroutines.JobCancellationException: ProducerCoroutine was cancelled; job=ProducerCoroutine{Cancelled}@8482992
+//        combine(
+//          lightMode.asFlow().catch { emit(false) },
+//          showSystemApps.asFlow().catch { emit(false) },
+//          backgroundSync.asFlow().catch { emit(false) },
+//          orderBySdk.asFlow().catch { emit(false) }
+//        ) { dark, system, backgroundSync, orderBySdk ->
+//          SettingsData(dark, system, backgroundSync, orderBySdk)
+//        }.catch {
+//          Log.i("viewModelScope====", it.message ?: "error")
+//        }.execute { copy(data = it) }
+//
+//      // 只要用上combine，则必然出 JobCancellationException 错
+//        showSystemApps.asFlow().combine(orderBySdk.asFlow()) {
+//          system, orderBy ->
+//            SettingsData(true, system, true, orderBy)
+//        }.execute { copy(data = it) }
+
+      showSystemApps.asFlow().collect {
+        flow {
+          emit(SettingsData(lightMode.get(), it, backgroundSync.get(), orderBySdk.get()))
+        }.execute {
+          copy(data = it)
+        }
+      }
+//
+//      // 如果上面的collect被执行，则程序不会到此处！！
+//      orderBySdk.asFlow().cancellable().collect {
+////        if (isActive) {
+//          flow {
+//            emit(SettingsData(lightMode.get(), showSystemApps.get(), backgroundSync.get(), it))
+//          }.execute {
+//              copy(data = it)
+//          }
+////        }
+//      }
+    }
+
 
 //    viewModelScope.launch {
 //      withContext(Dispatchers.IO) {
@@ -108,7 +163,6 @@ class SettingsViewModel @AssistedInject constructor(
 
 //
 //    viewModelScope.launch {
-//
 //      withContext(Dispatchers.IO) {
 //        showSystemApps.asFlow().collect{
 //          system -> flow {
@@ -119,18 +173,19 @@ class SettingsViewModel @AssistedInject constructor(
 //      }
 //    }
 
-    // 手机锁屏黑屏几秒钟后，这里就不再响应了！！！
-      Observables.combineLatest(
-              lightMode.observe(),
-              showSystemApps.observe(),
-              backgroundSync.observe(),
-              orderBySdk.observe()
-      ) { dark, system, backgroundSync, orderBySdk ->
-        SettingsData(dark, system, backgroundSync, orderBySdk)
-      }.subscribe {
-        setState {
-          copy(data = Success(it)) }
-      }
+//    // 这个逻辑可用
+//    // 手机锁屏黑屏几秒钟后，这里就不再响应了！！！
+//      Observables.combineLatest(
+//              lightMode.observe(),
+//              showSystemApps.observe(),
+//              backgroundSync.observe(),
+//              orderBySdk.observe()
+//      ) { dark, system, backgroundSync, orderBySdk ->
+//        SettingsData(dark, system, backgroundSync, orderBySdk)
+//      }.subscribe {
+//        setState {
+//          copy(data = Success(it)) }
+//      }
 
 
 //    viewModelScope.launch {
@@ -139,19 +194,19 @@ class SettingsViewModel @AssistedInject constructor(
 //      }
 //    }
 
-
-  fun setLightTheme(isLightMode: Boolean) {
-    settingsRepository.toggleLightTheme(isLightMode)
-  }
-
-  fun setShowSystemApps(isShowSystemApps: Boolean) {
-    settingsRepository.toggleShowSystemApps(isShowSystemApps)
-    mainRepository.forceRefresh = true
-  }
-
-  fun setOrderBySdk(isOrderBySdk: Boolean) {
-    settingsRepository.toggleOrderBySdk(isOrderBySdk)
-  }
+//
+//  fun setLightTheme(isLightMode: Boolean) {
+//    settingsRepository.toggleLightTheme(isLightMode)
+//  }
+//
+//  fun setShowSystemApps(isShowSystemApps: Boolean) {
+//    settingsRepository.toggleShowSystemApps(isShowSystemApps)
+//    mainRepository.forceRefresh = true
+//  }
+//
+//  fun setOrderBySdk(isOrderBySdk: Boolean) {
+//    settingsRepository.toggleOrderBySdk(isOrderBySdk)
+//  }
 
   @AssistedInject.Factory
   interface Factory : AssistedViewModelFactory<SettingsViewModel, SettingsState> {
@@ -159,34 +214,9 @@ class SettingsViewModel @AssistedInject constructor(
   }
 
   companion object : DaggerMavericksViewModelFactory<SettingsViewModel, SettingsState>(SettingsViewModel::class.java)
-//
-//    @AssistedInject.Factory
-//    interface Factory {
-//        fun create(
-//            state: SettingsState,
-//            sources: Observable<SettingsData>
-//        ): SettingsViewModel
-//    }
-//
-//    companion object : MvRxViewModelFactory<SettingsViewModel, SettingsState> {
-//
-//        override fun create(
-//            viewModelContext: ViewModelContext,
-//            state: SettingsState
-//        ): SettingsViewModel? {
-//
-//            val source = Observables.combineLatest(
-//                Injector.get().isLightTheme().observe(),
-//                Injector.get().showSystemApps().observe(),
-//                Injector.get().backgroundSync().observe(),
-//                Injector.get().orderBySdk().observe()
-//            ) { dark, system, backgroundSync, orderBySdk ->
-//                SettingsData(dark, system, backgroundSync, orderBySdk)
-//            }
-//
-//            val fragment: SettingsFragment =
-//                (viewModelContext as FragmentViewModelContext).fragment()
-//            return fragment.settingsViewModelFactory.create(state, source)
-//        }
-//    }
+
+  override fun onCleared() {
+    Log.i("SettingsViewModel", "onCleared*********************")
+    super.onCleared()
+  }
 }
