@@ -30,8 +30,8 @@ interface AppModule {
     @ViewModelKey(MainViewModel::class)
     fun mainViewModelFactory(factory: MainViewModel.Factory): AssistedViewModelFactory<*, *>
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(SettingsViewModel::class)
-    fun settingsViewModelFactory(factory: SettingsViewModel.Factory): AssistedViewModelFactory<*, *>
+//    @Binds
+//    @IntoMap
+//    @ViewModelKey(SettingsViewModel::class)
+//    fun settingsViewModelFactory(factory: SettingsViewModel.Factory): AssistedViewModelFactory<*, *>
 }

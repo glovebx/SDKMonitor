@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.afollestad.rxkprefs.Pref
+import com.afollestad.rxkprefs.RxkPrefs
 import com.afollestad.rxkprefs.coroutines.asFlow
 import com.afollestad.rxkprefs.rxjava.observe
 import com.airbnb.epoxy.EpoxyController
@@ -16,6 +17,7 @@ import com.bernaferrari.sdkmonitor.*
 import com.bernaferrari.sdkmonitor.core.AboutDialog
 import com.bernaferrari.sdkmonitor.core.AppManager
 import com.bernaferrari.ui.dagger.DaggerBaseRecyclerFragment
+import dagger.Provides
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.collect
@@ -26,19 +28,27 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
+import javax.inject.Provider
 
 @AndroidEntryPoint
 class SettingsFragment : DaggerBaseRecyclerFragment() {
 
     private val viewModel: SettingsViewModel by fragmentViewModel()
     @Inject
+    lateinit var settingsViewModelFactory: SettingsViewModel.Factory
+
+    @Inject
     @Named(value = "lightMode") lateinit var lightMode: Pref<Boolean>
     @Inject
     @Named(value = "showSystemApps") lateinit var showSystemApps: Pref<Boolean>
     @Inject
     @Named(value = "orderBySdk") lateinit var orderBySdk: Pref<Boolean>
-//    @Inject
-//    @Named(value = "backgroundSync") lateinit var backgroundSync: Pref<Boolean>
+    @Inject
+    @Named(value = "backgroundSync") lateinit var backgroundSync: Pref<Boolean>
+
+//    Provider<RxkPrefs> rxPrefsProvider
+    @Inject
+    lateinit var rxPrefsProvider: Provider<RxkPrefs>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -101,12 +111,17 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
                 .clickListener { v ->
 //                    Injector.get().isLightTheme().set(!lightMode)
 //                    viewModel.setLightTheme(!lightMode)
-                    lightMode.set(!isLightMode)
+                    try {
+                        lightMode.set(!isLightMode)
+                    } catch (e: Throwable) {
+                        println("$e")
+                    }
                     activity?.recreate()
                 }
                 .addTo(this)
 
-            val isShowSystemApps = state.data()?.showSystemApps ?: true
+//            val isShowSystemApps = state.data()?.showSystemApps ?: true
+            val isShowSystemApps = state.data()!!.showSystemApps
 
             SettingsSwitchBindingModel_()
                 .id("system apps")
@@ -117,7 +132,15 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
                 .subtitle("Show all installed apps. This might increase loading time.")
               .clickListener { model, parentView, clickedView, position ->
 //                Log.i("switchIsOn", "switchIsOn=$model.switchIsOn()")
-                showSystemApps.set(!model.switchIsOn())
+                  // ProducerCoroutine was cancelled
+                  println("showSystemApps=======$showSystemApps")
+                  try {
+                      showSystemApps.set(!model.switchIsOn())
+                  } catch (e: Throwable) {
+                      // kotlinx.coroutines.JobCancellationException: ProducerCoroutine was cancelled; job=ProducerCoroutine{Cancelled}@c3c9471
+                      println("$e")
+                  }
+//                  rxPrefsProvider.get().boolean("showSystemApps", false).set(!model.switchIsOn())
               }
 //                .clickListener { v ->
 ////                    Injector.get().showSystemApps().set(!showSystemApps)
@@ -137,7 +160,11 @@ class SettingsFragment : DaggerBaseRecyclerFragment() {
                 .switchIsVisible(true)
                 .switchIsOn(isOrderBySdk)
               .clickListener { model, parentView, clickedView, position ->
-                orderBySdk.set(!model.switchIsOn())
+                  try {
+                    orderBySdk.set(!model.switchIsOn())
+                  } catch (e: Throwable) {
+                      println("$e")
+                  }
               }
 //                .clickListener { v ->
 ////                    Injector.get().orderBySdk().set(!orderBySdk)

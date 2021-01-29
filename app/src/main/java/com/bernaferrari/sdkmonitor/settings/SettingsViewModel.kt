@@ -1,6 +1,7 @@
 package com.bernaferrari.sdkmonitor.settings
 
 import android.util.Log
+import androidx.fragment.app.FragmentActivity
 import com.afollestad.rxkprefs.Pref
 import com.afollestad.rxkprefs.coroutines.asFlow
 import com.afollestad.rxkprefs.rxjava.observe
@@ -8,9 +9,11 @@ import com.airbnb.mvrx.*
 import com.bernaferrari.sdkmonitor.data.SettingsRepository
 import com.bernaferrari.sdkmonitor.di.AssistedViewModelFactory
 import com.bernaferrari.sdkmonitor.di.DaggerMavericksViewModelFactory
+import com.bernaferrari.sdkmonitor.di.DaggerMavericksViewModelFactoryEntryPoint
 import com.bernaferrari.sdkmonitor.main.MainDataSource
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
+import dagger.hilt.EntryPoints
 import io.reactivex.rxkotlin.Observables
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -28,17 +31,19 @@ data class SettingsState(
 ) : MavericksState
 
 class SettingsViewModel @AssistedInject constructor(
-  @Assisted state: SettingsState,
-  private val settingsRepository: SettingsRepository,
-  private val mainRepository: MainDataSource,
-  @Named(value = "lightMode") val lightMode: Pref<Boolean>,
-  @Named(value = "showSystemApps") val showSystemApps: Pref<Boolean>,
-  @Named(value = "backgroundSync") val backgroundSync: Pref<Boolean>,
-  @Named(value = "orderBySdk") val orderBySdk: Pref<Boolean>
+  @Assisted val state: SettingsState,
+  @Assisted val sources: Flow<SettingsData>
+//  private val settingsRepository: SettingsRepository,
+//  private val mainRepository: MainDataSource,
+//  @Named(value = "lightMode") val lightMode: Pref<Boolean>,
+//  @Named(value = "showSystemApps") val showSystemApps: Pref<Boolean>,
+//  @Named(value = "backgroundSync") val backgroundSync: Pref<Boolean>,
+//  @Named(value = "orderBySdk") val orderBySdk: Pref<Boolean>
 ) : MavericksViewModel<SettingsState>(state) {
 
+  lateinit var job: Job
   init {
-    fetchData()
+    job = fetchData()
   }
 
   inline fun <reified T> instantCombine(vararg flows: Flow<T>) = channelFlow {
@@ -55,9 +60,6 @@ class SettingsViewModel @AssistedInject constructor(
       }
     }
   }
-
-  lateinit var job1 : Job
-  lateinit var job2 : Job
 
   private fun fetchData() =
 //    combine(
@@ -76,56 +78,60 @@ class SettingsViewModel @AssistedInject constructor(
 //        }
 //      }
 //    }
-
+//          viewModelScope.launch(SupervisorJob()) {
+            sources.execute { copy(data = it) }
+//          }.let {
+//            println("${it}")
+//          }
 //
 //    val handler = CoroutineExceptionHandler {
 //      context, exception -> println("Caught $exception")
 //    }
-
-    viewModelScope.launch(SupervisorJob()) {
-//      flow {
-//        emit(SettingsData(lightMode.get(), showSystemApps.get(), backgroundSync.get(), orderBySdk.get()))
-//      }.execute {
-//        copy(data = it)
-//      }
-
-      // kotlinx.coroutines.JobCancellationException: ProducerCoroutine was cancelled; job=ProducerCoroutine{Cancelled}@8482992
-//        combine(
-//          lightMode.asFlow().catch { emit(false) },
-//          showSystemApps.asFlow().catch { emit(false) },
-//          backgroundSync.asFlow().catch { emit(false) },
-//          orderBySdk.asFlow().catch { emit(false) }
-//        ) { dark, system, backgroundSync, orderBySdk ->
-//          SettingsData(dark, system, backgroundSync, orderBySdk)
-//        }.catch {
-//          Log.i("viewModelScope====", it.message ?: "error")
-//        }.execute { copy(data = it) }
+//    viewModelScope.launch(SupervisorJob()) {
+////      flow {
+////        emit(SettingsData(lightMode.get(), showSystemApps.get(), backgroundSync.get(), orderBySdk.get()))
+////      }.execute {
+////        copy(data = it)
+////      }
 //
-//      // 只要用上combine，则必然出 JobCancellationException 错
-//        showSystemApps.asFlow().combine(orderBySdk.asFlow()) {
-//          system, orderBy ->
-//            SettingsData(true, system, true, orderBy)
-//        }.execute { copy(data = it) }
-
-      showSystemApps.asFlow().collect {
-        flow {
-          emit(SettingsData(lightMode.get(), it, backgroundSync.get(), orderBySdk.get()))
-        }.execute {
-          copy(data = it)
-        }
-      }
-//
-//      // 如果上面的collect被执行，则程序不会到此处！！
-//      orderBySdk.asFlow().cancellable().collect {
-////        if (isActive) {
-//          flow {
-//            emit(SettingsData(lightMode.get(), showSystemApps.get(), backgroundSync.get(), it))
-//          }.execute {
-//              copy(data = it)
-//          }
+//      // kotlinx.coroutines.JobCancellationException: ProducerCoroutine was cancelled; job=ProducerCoroutine{Cancelled}@8482992
+////        combine(
+////          lightMode.asFlow().catch { emit(false) },
+////          showSystemApps.asFlow().catch { emit(false) },
+////          backgroundSync.asFlow().catch { emit(false) },
+////          orderBySdk.asFlow().catch { emit(false) }
+////        ) { dark, system, backgroundSync, orderBySdk ->
+////          SettingsData(dark, system, backgroundSync, orderBySdk)
+////        }.catch {
+////          Log.i("viewModelScope====", it.message ?: "error")
+////        }.execute { copy(data = it) }
+////
+////      // 只要用上combine，则必然出 JobCancellationException 错
+////        showSystemApps.asFlow().combine(orderBySdk.asFlow()) {
+////          system, orderBy ->
+////            SettingsData(true, system, true, orderBy)
+////        }.execute { copy(data = it) }
+////
+////      showSystemApps.asFlow().collect {
+////        flow {
+////          emit(SettingsData(lightMode.get(), it, backgroundSync.get(), orderBySdk.get()))
+////        }.execute {
+////          copy(data = it)
 ////        }
-//      }
-    }
+////      }
+//
+////
+////      // 如果上面的collect被执行，则程序不会到此处！！
+////      orderBySdk.asFlow().cancellable().collect {
+//////        if (isActive) {
+////          flow {
+////            emit(SettingsData(lightMode.get(), showSystemApps.get(), backgroundSync.get(), it))
+////          }.execute {
+////              copy(data = it)
+////          }
+//////        }
+////      }
+//    }
 
 
 //    viewModelScope.launch {
@@ -209,13 +215,36 @@ class SettingsViewModel @AssistedInject constructor(
 //  }
 
   @AssistedInject.Factory
-  interface Factory : AssistedViewModelFactory<SettingsViewModel, SettingsState> {
-    override fun create(state: SettingsState): SettingsViewModel
+  interface Factory {
+    fun create(state: SettingsState,
+               sources: Flow<SettingsData>): SettingsViewModel
   }
 
-  companion object : DaggerMavericksViewModelFactory<SettingsViewModel, SettingsState>(SettingsViewModel::class.java)
+  companion object : DaggerMavericksViewModelFactory<SettingsViewModel, SettingsState>(SettingsViewModel::class.java) {
+//    @Named(value = "lightMode") lateinit var lightMode: Pref<Boolean>
+//    @Named(value = "showSystemApps") lateinit var showSystemApps: Pref<Boolean>
+//    @Named(value = "backgroundSync") lateinit var backgroundSync: Pref<Boolean>
+//    @Named(value = "orderBySdk") lateinit var orderBySdk: Pref<Boolean>
+
+    override fun create(viewModelContext: ViewModelContext, state: SettingsState): SettingsViewModel? {
+      val fragment: SettingsFragment =
+              (viewModelContext as FragmentViewModelContext).fragment()
+
+        val sources = combine(
+                fragment.lightMode.asFlow(),
+                fragment.showSystemApps.asFlow(),
+                fragment.backgroundSync.asFlow(),
+                fragment.orderBySdk.asFlow()
+        ) { dark, system, backgroundSync, orderBySdk ->
+          SettingsData(dark, system, backgroundSync, orderBySdk)
+        }
+
+      return fragment.settingsViewModelFactory.create(state, sources)
+    }
+  }
 
   override fun onCleared() {
+//    job.cancel()
     Log.i("SettingsViewModel", "onCleared*********************")
     super.onCleared()
   }
