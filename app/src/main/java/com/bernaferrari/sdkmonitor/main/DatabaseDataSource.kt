@@ -12,7 +12,6 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.paging.DataSource
 import androidx.palette.graphics.Palette
 import com.afollestad.rxkprefs.Pref
-import com.afollestad.rxkprefs.coroutines.asFlow
 import com.bernaferrari.sdkmonitor.MainActivity
 import com.bernaferrari.sdkmonitor.R
 import com.bernaferrari.sdkmonitor.data.App
@@ -21,6 +20,7 @@ import com.bernaferrari.sdkmonitor.data.source.local.AppsDao
 import com.bernaferrari.sdkmonitor.data.source.local.VersionsDao
 import com.bernaferrari.sdkmonitor.extensions.convertTimestampToDate
 import com.bernaferrari.sdkmonitor.extensions.darken
+import com.bernaferrari.sdkmonitor.util.asFlow
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.karn.notify.Notify
 import kotlinx.coroutines.Dispatchers

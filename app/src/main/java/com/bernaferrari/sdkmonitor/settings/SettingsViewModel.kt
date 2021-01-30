@@ -1,23 +1,17 @@
 package com.bernaferrari.sdkmonitor.settings
 
 import android.util.Log
-import androidx.fragment.app.FragmentActivity
-import com.afollestad.rxkprefs.Pref
-import com.afollestad.rxkprefs.coroutines.asFlow
-import com.afollestad.rxkprefs.rxjava.observe
 import com.airbnb.mvrx.*
-import com.bernaferrari.sdkmonitor.data.SettingsRepository
-import com.bernaferrari.sdkmonitor.di.AssistedViewModelFactory
 import com.bernaferrari.sdkmonitor.di.DaggerMavericksViewModelFactory
-import com.bernaferrari.sdkmonitor.di.DaggerMavericksViewModelFactoryEntryPoint
-import com.bernaferrari.sdkmonitor.main.MainDataSource
+import com.bernaferrari.sdkmonitor.util.asFlow
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
-import dagger.hilt.EntryPoints
-import io.reactivex.rxkotlin.Observables
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import javax.inject.Named
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 data class SettingsData(
   val lightMode: Boolean,
@@ -31,8 +25,8 @@ data class SettingsState(
 ) : MavericksState
 
 class SettingsViewModel @AssistedInject constructor(
-  @Assisted val state: SettingsState,
-  @Assisted val sources: Flow<SettingsData>
+        @Assisted val state: SettingsState,
+        @Assisted val sources: Flow<SettingsData>
 //  private val settingsRepository: SettingsRepository,
 //  private val mainRepository: MainDataSource,
 //  @Named(value = "lightMode") val lightMode: Pref<Boolean>,
@@ -244,7 +238,6 @@ class SettingsViewModel @AssistedInject constructor(
   }
 
   override fun onCleared() {
-//    job.cancel()
     Log.i("SettingsViewModel", "onCleared*********************")
     super.onCleared()
   }

@@ -2,7 +2,6 @@ package com.bernaferrari.sdkmonitor.data
 
 import android.util.Log
 import com.afollestad.rxkprefs.Pref
-import com.afollestad.rxkprefs.coroutines.asFlow
 import com.bernaferrari.sdkmonitor.settings.SettingsData
 import io.reactivex.rxkotlin.Observables
 import kotlinx.coroutines.Dispatchers

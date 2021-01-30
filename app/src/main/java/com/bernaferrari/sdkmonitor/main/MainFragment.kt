@@ -6,7 +6,6 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import com.afollestad.rxkprefs.Pref
-import com.afollestad.rxkprefs.coroutines.asFlow
 import com.airbnb.mvrx.*
 import com.bernaferrari.base.misc.toDp
 import com.bernaferrari.base.mvrx.simpleController
@@ -18,6 +17,7 @@ import com.bernaferrari.sdkmonitor.extensions.apiToColor
 import com.bernaferrari.sdkmonitor.extensions.apiToVersion
 import com.bernaferrari.sdkmonitor.loadingRow
 import com.bernaferrari.sdkmonitor.util.InsetDecoration
+import com.bernaferrari.sdkmonitor.util.asFlow
 import com.bernaferrari.sdkmonitor.views.LogsItemModel_
 import com.bernaferrari.ui.dagger.DaggerBaseSearchFragment
 import dagger.hilt.android.AndroidEntryPoint
