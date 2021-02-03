@@ -130,24 +130,23 @@ class MainFragment : DaggerBaseSearchFragment() {
         setInputHint("Loading...")
 
         launch {
-            val count = viewModel.maxListSize.subscriptionCount.value
-            setInputHint(resources.getQuantityString(R.plurals.searchApps, count, count))
+            viewModel.maxListSize.collect {
+              setInputHint(resources.getQuantityString(R.plurals.searchApps, it, it))
+            }
+
+          orderBySdk.asFlow().collect { orderBySdk ->
+            fastScroller.isVisible = !orderBySdk
+
+            if (orderBySdk) {
+              recyclerView.removeItemDecoration(standardItemDecorator)
+            } else {
+              recyclerView.addItemDecoration(standardItemDecorator)
+            }
+          }
         }
 //        disposableManager += viewModel.maxListSize.subscriptionCount.launchIn(coroutineContext)
 //        .observeOn(AndroidSchedulers.mainThread())
 //            .subscribe { setInputHint(resources.getQuantityString(R.plurals.searchApps, it, it)) }
-
-        launch {
-            orderBySdk.asFlow().collect { orderBySdk ->
-                fastScroller.isVisible = !orderBySdk
-
-                if (orderBySdk) {
-                    recyclerView.removeItemDecoration(standardItemDecorator)
-                } else {
-                    recyclerView.addItemDecoration(standardItemDecorator)
-                }
-            }
-        }
 
 //        // observe when order changes
 //        disposableManager += Injector.get().orderBySdk().observe()

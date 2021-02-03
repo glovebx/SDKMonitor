@@ -4,13 +4,13 @@ import android.content.Context
 import com.airbnb.mvrx.MavericksViewModel
 import com.bernaferrari.sdkmonitor.di.AssistedViewModelFactory
 import com.bernaferrari.sdkmonitor.di.DaggerMavericksViewModelFactory
+import com.bernaferrari.sdkmonitor.extensions.normalizeString
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 class MainViewModel @AssistedInject constructor(
   @Assisted state: MainState,
@@ -20,16 +20,32 @@ class MainViewModel @AssistedInject constructor(
 
   val itemsList = mutableListOf<AppVersion>()
   var hasLoaded = false
-  var maxListSize: MutableSharedFlow<Int> = MutableSharedFlow()
-  val inputRelay: MutableSharedFlow<String> = MutableSharedFlow()
+  // 有关StateFlow的解释
+  // https://blog.mindorks.com/stateflow-apis-in-kotlin
+  var maxListSize: MutableStateFlow<Int> = MutableStateFlow(0)
+  val inputRelay: MutableStateFlow<String> = MutableStateFlow("")
 
   init {
     fetchData()
   }
 
   private fun fetchData() = withState {
-    allApps().execute {
-      copy(listOfItems = it)
+//    combine(allApps(), inputRelay) {
+//      list, filter ->
+//            list.takeIf { filter.isNotBlank() }
+//                ?.filter { filter.normalizeString() in it.app.title.normalizeString() }
+//                    ?: list
+//    }
+
+//    viewModelScope.launch {
+//      inputRelay.collect {
+//        allApps(it).execute { it2 ->
+//          copy(listOfItems = it2)
+//        }
+//      }
+//    }
+    allApps("").execute { it2 ->
+      copy(listOfItems = it2)
     }
 
 //
@@ -52,14 +68,20 @@ class MainViewModel @AssistedInject constructor(
 //        }
   }
 
-  private fun allApps() = viewModelScope.async {
+  private fun allApps(filter: String) = viewModelScope.async {
     if (mainRepository.forceRefresh) {
       mainRepository.forceRefresh = false
       mainRepository.refreshAll(context)
     }
-    val appList = mainRepository.getAppsList()
+    val appList = mainRepository.getAppsList().filter {
+      if (filter.isNotBlank()) {
+        filter.normalizeString() in it.title.normalizeString()
+      } else {
+        true
+      }
+    }
 
-    maxListSize.tryEmit(appList.size)
+    maxListSize.value = appList.size
     val versionList = appList.map { app -> mainRepository.mapSdkDate(app) }
 
     var orderBySdk = false
