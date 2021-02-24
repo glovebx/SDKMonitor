@@ -64,9 +64,10 @@ android {
             )
 //            signingConfig = signingConfigs.getByName("release")
         }
-//        named("debug") {
+        named("debug") {
 //            applicationIdSuffix = ".debug"
-//        }
+            isDebuggable = true
+        }
     }
     kapt.correctErrorTypes = true
     lintOptions.isAbortOnError = false
