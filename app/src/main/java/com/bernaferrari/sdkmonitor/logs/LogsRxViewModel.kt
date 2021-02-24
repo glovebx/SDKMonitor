@@ -7,12 +7,11 @@ import com.airbnb.mvrx.*
 import com.bernaferrari.sdkmonitor.data.App
 import com.bernaferrari.sdkmonitor.data.Version
 import com.bernaferrari.sdkmonitor.di.AssistedViewModelFactory
-import com.bernaferrari.sdkmonitor.di.DaggerMavericksViewModelFactory
+import com.bernaferrari.sdkmonitor.di.hiltMavericksViewModelFactory
 import com.bernaferrari.sdkmonitor.main.MainDataSource
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
 
 data class LogsState(
   val changesCount: Async<Int> = Uninitialized,
@@ -58,6 +57,6 @@ class LogsRxViewModel @AssistedInject constructor(
     override fun create(state: LogsState): LogsRxViewModel
   }
 
-  companion object : DaggerMavericksViewModelFactory<LogsRxViewModel, LogsState>(LogsRxViewModel::class.java)
+  companion object : MavericksViewModelFactory<LogsRxViewModel, LogsState> by hiltMavericksViewModelFactory()
 
 }

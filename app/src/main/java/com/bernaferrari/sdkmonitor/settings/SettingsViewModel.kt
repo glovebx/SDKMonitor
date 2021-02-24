@@ -2,7 +2,7 @@ package com.bernaferrari.sdkmonitor.settings
 
 import android.util.Log
 import com.airbnb.mvrx.*
-import com.bernaferrari.sdkmonitor.di.DaggerMavericksViewModelFactory
+import com.bernaferrari.sdkmonitor.di.hiltMavericksViewModelFactory
 import com.bernaferrari.sdkmonitor.util.asFlow
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
@@ -214,7 +214,7 @@ class SettingsViewModel @AssistedInject constructor(
                sources: Flow<SettingsData>): SettingsViewModel
   }
 
-  companion object : DaggerMavericksViewModelFactory<SettingsViewModel, SettingsState>(SettingsViewModel::class.java) {
+  companion object : MavericksViewModelFactory<SettingsViewModel, SettingsState> by hiltMavericksViewModelFactory() {
 //    @Named(value = "lightMode") lateinit var lightMode: Pref<Boolean>
 //    @Named(value = "showSystemApps") lateinit var showSystemApps: Pref<Boolean>
 //    @Named(value = "backgroundSync") lateinit var backgroundSync: Pref<Boolean>

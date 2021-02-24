@@ -3,7 +3,7 @@ package com.bernaferrari.sdkmonitor.details
 import com.airbnb.mvrx.*
 import com.bernaferrari.sdkmonitor.data.Version
 import com.bernaferrari.sdkmonitor.di.AssistedViewModelFactory
-import com.bernaferrari.sdkmonitor.di.DaggerMavericksViewModelFactory
+import com.bernaferrari.sdkmonitor.di.hiltMavericksViewModelFactory
 import com.bernaferrari.sdkmonitor.main.AppDetails
 import com.bernaferrari.sdkmonitor.main.MainDataSource
 import com.squareup.inject.assisted.Assisted
@@ -54,6 +54,6 @@ class DetailsViewModel @AssistedInject constructor(
         override fun create(state: DetailsState): DetailsViewModel
     }
 
-    companion object : DaggerMavericksViewModelFactory<DetailsViewModel, DetailsState>(DetailsViewModel::class.java)
+    companion object : MavericksViewModelFactory<DetailsViewModel, DetailsState> by hiltMavericksViewModelFactory()
 
 }

@@ -2,8 +2,9 @@ package com.bernaferrari.sdkmonitor.main
 
 import android.content.Context
 import com.airbnb.mvrx.MavericksViewModel
+import com.airbnb.mvrx.MavericksViewModelFactory
 import com.bernaferrari.sdkmonitor.di.AssistedViewModelFactory
-import com.bernaferrari.sdkmonitor.di.DaggerMavericksViewModelFactory
+import com.bernaferrari.sdkmonitor.di.hiltMavericksViewModelFactory
 import com.bernaferrari.sdkmonitor.extensions.normalizeString
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
@@ -96,5 +97,5 @@ class MainViewModel @AssistedInject constructor(
     override fun create(state: MainState): MainViewModel
   }
 
-  companion object : DaggerMavericksViewModelFactory<MainViewModel, MainState>(MainViewModel::class.java)
+  companion object : MavericksViewModelFactory<MainViewModel, MainState> by hiltMavericksViewModelFactory()
 }

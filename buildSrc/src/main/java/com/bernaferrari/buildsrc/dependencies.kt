@@ -175,7 +175,7 @@ object Libs {
     }
 
     object Hilt {
-        private const val hilt_version = "2.28.3-alpha" //Hilt依赖注入
+        private const val hilt_version = "2.31.1-alpha" //Hilt依赖注入
 //        private const val hilt_viewmodel_version = "1.0.0-alpha02"
 
         val hilt = "com.google.dagger:hilt-android:$hilt_version"
@@ -209,14 +209,14 @@ object Libs {
     }
 
     object MvRx {
-        private const val version = "2.0.0-beta3"
-        val main = "com.airbnb.android:mvrx:$version"
-        val testing = "com.airbnb.android:mvrx-testing:$version"
-        val mvrxRxJava = "com.airbnb.android:mvrx-rxjava2:$version"
+        private const val version = "2.0.0"
+        val main = "com.airbnb.android:mavericks:$version"
+        val testing = "com.airbnb.android:mavericks-testing:$version"
+        val mvrxRxJava = "com.airbnb.android:mavericks-rxjava2:$version"
     }
 
     object Epoxy {
-        private const val version = "4.1.0"
+        private const val version = "4.4.0"
         val epoxy = "com.airbnb.android:epoxy:$version"
         val paging = "com.airbnb.android:epoxy-paging:$version"
         val dataBinding = "com.airbnb.android:epoxy-databinding:$version"
